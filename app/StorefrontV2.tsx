@@ -11,7 +11,7 @@ import {
   uniqueDecades,
   uniqueRegions,
 } from "../lib/catalog";
-import { createDateRequestRecord, searchLocArchive, searchLocSameDay } from "../lib/loc-archive";
+import { createDateRequestRecord, createSameDayRequestRecord, searchLocArchive, searchLocSameDay } from "../lib/loc-archive";
 
 type SearchPath = "date" | "headline";
 type DateMode = "exact" | "month-day";
@@ -142,6 +142,7 @@ export default function StorefrontV2() {
       let items: NewspaperRecord[] = [];
       if (searchPath === "date" && dateMode === "month-day") {
         items = await searchLocSameDay(month, day);
+        if (items.length === 0) items = [createSameDayRequestRecord(month, day, locationQuery.trim())];
       } else {
         const mode = searchPath === "date" ? "date" : "headline";
         try {
@@ -286,7 +287,7 @@ export default function StorefrontV2() {
         </div>
 
         <div className="hero-art" aria-label="Verified historic newspaper front page example">
-          <div className="edition-ticket">A REAL FRONT PAGE · NOV 11, 1918</div>
+          <div className="edition-ticket">A REAL FRONT PAGE · {formatIssueDate(catalog[0].issueDate).toUpperCase()}</div>
           <NewspaperPreview record={catalog[0]} />
           <p className="art-caption">A meaningful date can uncover an unforgettable headline.</p>
         </div>
@@ -317,7 +318,7 @@ export default function StorefrontV2() {
 
           <div className="results-area">
             <div className="results-toolbar">
-              <div><p><strong>{filtered.length}</strong> front {filtered.length === 1 ? "page" : "pages"} found</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Search complete. Archive scans and custom research requests are labeled separately.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged results.</small>}</div>
+              <div><p><strong>{filtered.filter((record) => record.previewUrl && record.sourceUrl).length}</strong> real front {filtered.filter((record) => record.previewUrl && record.sourceUrl).length === 1 ? "page" : "pages"}{filtered.some((record) => !record.previewUrl) && <> · <strong>{filtered.filter((record) => !record.previewUrl).length}</strong> research {filtered.filter((record) => !record.previewUrl).length === 1 ? "request" : "requests"}</>}</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Search complete. Every archive result shown with an image links to its original record.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged results.</small>}</div>
               <label><span>Sort</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option>Featured</option><option>Oldest first</option><option>Newest first</option><option>City A–Z</option></select></label>
             </div>
 
@@ -334,7 +335,7 @@ export default function StorefrontV2() {
                       <h3>{record.headline}</h3>
                       <span>{record.publication} · {record.city}{record.region ? `, ${record.region}` : ""}</span>
                       {record.sourceName && <small className="source-chip">SOURCE: {record.sourceName.replace("Library of Congress — ", "")}</small>}
-                      <div><strong>From $64</strong><button type="button" onClick={() => openRecord(record)}>{record.assetStatus === "Print ready" ? "Choose print" : "Request issue"} →</button></div>
+                      <div><strong>{record.previewUrl ? "From $64" : "Research request"}</strong><button type="button" onClick={() => openRecord(record)}>{record.previewUrl ? (record.assetStatus === "Print ready" ? "Choose print" : "Request issue") : "Request research"} →</button></div>
                     </div>
                   </article>
                 ))}

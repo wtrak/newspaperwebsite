@@ -4,6 +4,8 @@ Use `newspaper_inventory_template.csv` as the intake sheet for every front page.
 
 The `month_day` field is stored separately from `issue_date` so a gift shopper can search one birthday or anniversary across every indexed year. Headline and keyword fields power the separate decor/history search path.
 
+`loc_front_pages.json` is the website's generated, image-backed seed catalog. Rebuild it with `npm run catalog:build`. A record is counted as a front page only when it has a real Library of Congress page image and source URL; demonstration records and unresolved research requests do not count as archive holdings.
+
 ## Required before a print can be sold
 
 - Confirm the publication, issue date, edition, and location.

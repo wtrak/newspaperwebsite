@@ -16,6 +16,7 @@ First Edition is a searchable storefront for large-format historic newspaper fro
 - D1 catalog and inquiry schema
 - R2-ready structure for protected previews and print masters
 - CSV inventory template with source, rights, scan-quality, and restoration fields
+- Image-backed Library of Congress seed catalog with source links and real issue metadata
 - Automated visual-fit preflight for Wikimedia Commons candidates
 
 ## Two ways to shop
@@ -29,7 +30,10 @@ All products are unframed prints. Each archive item is checked for source, reuse
 
 The source directory separates direct catalog sources from rights-filtered databases, discovery directories, research-only references, and inactive archives. Wikimedia's supplied search is already filtered for unrestricted files; the included preflight focuses on whether each result is actually a complete, high-resolution portrait front page.
 
+The browse count includes only records with a real archive image and source link. Custom research requests are displayed and counted separately from front pages.
+
 ```bash
+npm run catalog:build
 npm run sources:wikimedia -- --limit=50
 ```
 

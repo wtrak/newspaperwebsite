@@ -1,3 +1,6 @@
+import locFrontPages from "../catalog/loc_front_pages.json";
+import { mapLocResult } from "./loc-archive";
+
 export type RightsStatus = "Public domain" | "Licensed" | "Rights review";
 export type AssetStatus = "Print ready" | "Restoration needed" | "Source requested";
 
@@ -34,7 +37,7 @@ export const printSizes = [
   { label: "30 × 40 in", price: 119, note: "Statement size" },
 ] as const;
 
-export const catalog: NewspaperRecord[] = [
+const demonstrationCatalog: NewspaperRecord[] = [
   {
     id: "loc-sn84027621-1918-11-11-ed1-p1",
     issueDate: "1918-11-11",
@@ -446,6 +449,16 @@ export const catalog: NewspaperRecord[] = [
     accent: "green",
   },
 ];
+
+const seededCatalog = locFrontPages
+  .map((item, index) => mapLocResult(item, "date", "", index))
+  .filter((item): item is NewspaperRecord => Boolean(item));
+
+const previouslyVerifiedCatalog = demonstrationCatalog.filter((item) => item.previewUrl && item.sourceUrl);
+
+export const catalog: NewspaperRecord[] = [...new Map(
+  [...seededCatalog, ...previouslyVerifiedCatalog].map((item) => [item.id, item]),
+).values()];
 
 export const formatIssueDate = (date: string) =>
   new Intl.DateTimeFormat("en-US", {

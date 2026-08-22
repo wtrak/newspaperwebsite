@@ -63,7 +63,7 @@ export function mapLocResult(item: LocSearchItem, mode: LocSearchMode, query = "
     city: identity.city,
     region: identity.region,
     country: "United States",
-    headline: mode === "headline" ? `Front page mentioning “${query}”` : `The news of ${item.date}`,
+    headline: mode === "headline" ? `Front page mentioning “${query}”` : `Front page from ${item.date}`,
     summary: mode === "headline"
       ? `A Library of Congress OCR search found this front page for “${query}.” Open the source scan to inspect the original wording and placement.`
       : "A front page from the requested date. Open the source scan to discover the stories that shared this meaningful day.",
@@ -128,14 +128,19 @@ export async function searchLocArchive({
 }
 
 export async function searchLocSameDay(month: string, day: string) {
-  const representativeYears = [1840, 1860, 1880, 1900, 1910, 1920, 1930, 1940, 1950, 1960];
-  const searches = representativeYears
+  const representativeYears = [1910, 1920, 1930, 1940, 1950, 1960, 1900, 1880, 1860, 1840];
+  const dates = representativeYears
     .map((year) => `${year}-${month}-${day.padStart(2, "0")}`)
-    .filter((date) => !Number.isNaN(Date.parse(`${date}T00:00:00Z`)))
-    .map((date) => searchLocArchive({ mode: "date", date, limit: 1 }));
-  const settled = await Promise.allSettled(searches);
+    .filter((date) => !Number.isNaN(Date.parse(`${date}T00:00:00Z`)));
+  const records: NewspaperRecord[] = [];
+  for (let index = 0; index < dates.length && records.length < 4; index += 2) {
+    const settled = await Promise.allSettled(dates.slice(index, index + 2).map((date) =>
+      searchLocArchive({ mode: "date", date, limit: 1, timeoutMs: 12000 }),
+    ));
+    records.push(...settled.flatMap((result) => result.status === "fulfilled" ? result.value : []));
+  }
   const seen = new Set<string>();
-  return settled.flatMap((result) => result.status === "fulfilled" ? result.value : []).filter((record) => {
+  return records.filter((record) => {
     if (seen.has(record.id)) return false;
     seen.add(record.id);
     return true;
@@ -164,5 +169,18 @@ export function createDateRequestRecord(date: string, location = ""): NewspaperR
     catalogStatus: "Archive lead",
     featured: true,
     accent: "gold",
+  };
+}
+
+export function createSameDayRequestRecord(month: string, day: string, location = ""): NewspaperRecord {
+  const paddedDay = day.padStart(2, "0");
+  return {
+    ...createDateRequestRecord(`1920-${month}-${paddedDay}`, location),
+    id: `request-same-day-${month}-${paddedDay}-${location.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "anywhere"}`,
+    headline: `Research ${month}/${paddedDay} across the years`,
+    summary: "No instant scans loaded this time. Submit this calendar day and we will search the mapped archives across multiple years and locations.",
+    edition: "Same-day research request",
+    keywords: ["same day", month, paddedDay, location],
+    sourceReference: `REQUEST-SAME-DAY-${month}-${paddedDay}`,
   };
 }

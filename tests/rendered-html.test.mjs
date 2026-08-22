@@ -82,3 +82,13 @@ test("date searches have live archive and custom-request fallbacks", async () =>
   assert.match(archive, /representativeYears/);
   assert.match(archive, /Find this date for me/);
 });
+
+test("the browse catalog is backed by real image records", async () => {
+  const raw = await readFile(new URL("../catalog/loc_front_pages.json", import.meta.url), "utf8");
+  const records = JSON.parse(raw);
+  assert.ok(records.length >= 40);
+  assert.ok(records.every((record) => record.id?.includes("loc.gov/resource/") && record.image_url?.some((url) => url.includes("tile.loc.gov/image-services/"))));
+  for (const monthDay of ["03-13", "05-11", "05-20", "05-25", "08-06", "06-06", "04-26"]) {
+    assert.ok(records.filter((record) => record.date?.slice(5) === monthDay).length >= 4, `${monthDay} should have at least four real pages`);
+  }
+});

@@ -1,0 +1,565 @@
+[
+  {
+    "id": "http://www.loc.gov/resource/sn86090439/1900-03-13/ed-1/?sp=1",
+    "title": "Image 1 of San Antonio daily light (San Antonio, Tex.), March 13, 1900",
+    "date": "1900-03-13",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_frisco_ver01:data:sn86090439:00517175080:1900031301:0596/full/pct:6.25/0/default.jpg#h=433&w=290",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_frisco_ver01:data:sn86090439:00517175080:1900031301:0596/full/pct:12.5/0/default.jpg#h=866&w=580"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/2017270205/1900-04-26/ed-1/?sp=1",
+    "title": "Image 1 of The Nebraska independent (Lincoln, Nebraska), April 26, 1900",
+    "date": "1900-04-26",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_jackinthepulpit_ver01:data:2017270205:00279527847:1900042601:0010/full/pct:3.125/0/default.jpg#h=276&w=229",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_jackinthepulpit_ver01:data:2017270205:00279527847:1900042601:0010/full/pct:6.25/0/default.jpg#h=552&w=459",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_jackinthepulpit_ver01:data:2017270205:00279527847:1900042601:0010/full/pct:12.5/0/default.jpg#h=1105&w=919"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn86072192/1900-05-11/ed-1/?sp=1",
+    "title": "Image 1 of The age-herald (Birmingham, Ala.), May 11, 1900",
+    "date": "1900-05-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_brown_ver01:data:sn86072192:00340583395:1900051101:0362/full/pct:6.25/0/default.jpg#h=416&w=291",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_brown_ver01:data:sn86072192:00340583395:1900051101:0362/full/pct:12.5/0/default.jpg#h=832&w=582"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn86072192/1900-05-20/ed-1/?sp=1",
+    "title": "Image 1 of The age-herald (Birmingham, Ala.), May 20, 1900, (Section 1)",
+    "date": "1900-05-20",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_brown_ver01:data:sn86072192:00340583395:1900052001:0442/full/pct:6.25/0/default.jpg#h=417&w=291",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_brown_ver01:data:sn86072192:00340583395:1900052001:0442/full/pct:12.5/0/default.jpg#h=835&w=583"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn85049554/1900-05-25/ed-1/?sp=1",
+    "title": "Image 1 of Evening times-Republican (Marshalltown, Iowa), May 25, 1900",
+    "date": "1900-05-25",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iahi:batch_iahi_carson_ver01:data:sn85049554:00416159324:1900052501:0375/full/pct:3.125/0/default.jpg#h=272&w=211",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iahi:batch_iahi_carson_ver01:data:sn85049554:00416159324:1900052501:0375/full/pct:6.25/0/default.jpg#h=544&w=422",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iahi:batch_iahi_carson_ver01:data:sn85049554:00416159324:1900052501:0375/full/pct:12.5/0/default.jpg#h=1088&w=844"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn86072192/1900-06-06/ed-1/?sp=1",
+    "title": "Image 1 of The age-herald (Birmingham, Ala.), June 6, 1900",
+    "date": "1900-06-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_brown_ver01:data:sn86072192:00340583395:1900060601:0606/full/pct:6.25/0/default.jpg#h=416&w=290",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_brown_ver01:data:sn86072192:00340583395:1900060601:0606/full/pct:12.5/0/default.jpg#h=833&w=581"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020107/1900-08-06/ed-1/?sp=1",
+    "title": "Image 1 of The Beatrice daily express (Beatrice, Neb.), August 6, 1900",
+    "date": "1900-08-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_dove_ver01:data:sn84020107:00517015015:1900080601:0348/full/pct:6.25/0/default.jpg#h=454&w=326",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_dove_ver01:data:sn84020107:00517015015:1900080601:0348/full/pct:12.5/0/default.jpg#h=909&w=652"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020645/1910-03-13/ed-1/?sp=1",
+    "title": "Image 1 of The Montgomery advertiser (Montgomery, Ala.), March 13, 1910",
+    "date": "1910-03-13",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_andrews_ver01:data:sn84020645:00513684356:1910031301:1013/full/pct:6.25/0/default.jpg#h=437&w=311",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_andrews_ver01:data:sn84020645:00513684356:1910031301:1013/full/pct:12.5/0/default.jpg#h=874&w=622"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn88084272/1910-04-26/ed-1/?sp=1",
+    "title": "Image 1 of El Paso herald (El Paso, Tex.), April 26, 1910",
+    "date": "1910-04-26",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_belgium_ver01:data:sn88084272:00294554245:1910042601:0625/full/pct:3.125/0/default.jpg#h=297&w=228",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_belgium_ver01:data:sn88084272:00294554245:1910042601:0625/full/pct:6.25/0/default.jpg#h=594&w=456",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_belgium_ver01:data:sn88084272:00294554245:1910042601:0625/full/pct:12.5/0/default.jpg#h=1189&w=913"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn85038485/1910-05-11/ed-1/?sp=1",
+    "title": "Image 1 of The Birmingham age-herald (Birmingham, Ala.), May 11, 1910",
+    "date": "1910-05-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_gaston_ver01:data:sn85038485:00340583942:1910051101:0192/full/pct:6.25/0/default.jpg#h=443&w=314",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_gaston_ver01:data:sn85038485:00340583942:1910051101:0192/full/pct:12.5/0/default.jpg#h=886&w=629"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn85038485/1910-05-20/ed-1/?sp=1",
+    "title": "Image 1 of The Birmingham age-herald (Birmingham, Ala.), May 20, 1910",
+    "date": "1910-05-20",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_gaston_ver01:data:sn85038485:00340583942:1910052001:0334/full/pct:6.25/0/default.jpg#h=439&w=305",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_gaston_ver01:data:sn85038485:00340583942:1910052001:0334/full/pct:12.5/0/default.jpg#h=878&w=611"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn85038485/1910-05-25/ed-1/?sp=1",
+    "title": "Image 1 of The Birmingham age-herald (Birmingham, Ala.), May 25, 1910",
+    "date": "1910-05-25",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_gaston_ver01:data:sn85038485:00340583942:1910052501:0422/full/pct:6.25/0/default.jpg#h=443&w=312",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_gaston_ver01:data:sn85038485:00340583942:1910052501:0422/full/pct:12.5/0/default.jpg#h=886&w=624"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn92053737/1910-06-06/ed-1/?sp=1",
+    "title": "Image 1 of East St. Louis daily journal (East St. Louis, Ill.), June 6, 1910",
+    "date": "1910-06-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_egret_ver01:data:sn92053737:00542864138:1910060601:0618/full/pct:6.25/0/default.jpg#h=451&w=333",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_egret_ver01:data:sn92053737:00542864138:1910060601:0618/full/pct:12.5/0/default.jpg#h=902&w=666"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn85038485/1910-08-06/ed-1/?sp=1",
+    "title": "Image 1 of The Birmingham age-herald (Birmingham, Ala.), August 6, 1910",
+    "date": "1910-08-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_gaston_ver01:data:sn85038485:00340583954:1910080601:0546/full/pct:6.25/0/default.jpg#h=441&w=312",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_gaston_ver01:data:sn85038485:00340583954:1910080601:0546/full/pct:12.5/0/default.jpg#h=883&w=624"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020645/1920-01-01/ed-1/?sp=1",
+    "title": "Image 1 of The Montgomery advertiser (Montgomery, Ala.), January 1, 1920",
+    "date": "1920-01-01",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_fletcher_ver01:data:sn84020645:00517017796:1920010101:0004/full/pct:6.25/0/default.jpg#h=440&w=299",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_fletcher_ver01:data:sn84020645:00517017796:1920010101:0004/full/pct:12.5/0/default.jpg#h=881&w=599"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020645/1920-01-15/ed-1/?sp=1",
+    "title": "Image 1 of The Montgomery advertiser (Montgomery, Ala.), January 15, 1920",
+    "date": "1920-01-15",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_fletcher_ver01:data:sn84020645:00517017796:1920011501:0212/full/pct:6.25/0/default.jpg#h=436&w=304",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_fletcher_ver01:data:sn84020645:00517017796:1920011501:0212/full/pct:12.5/0/default.jpg#h=873&w=608"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn92053739/1920-01-22/ed-1/?sp=1",
+    "title": "Image 1 of East St. Louis daily journal (East St. Louis, Ill.), January 22, 1920",
+    "date": "1920-01-22",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_heron_ver01:data:sn92053739:00542864345:1920012201:0268/full/pct:6.25/0/default.jpg#h=471&w=332",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_heron_ver01:data:sn92053739:00542864345:1920012201:0268/full/pct:12.5/0/default.jpg#h=943&w=665"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020645/1920-01-29/ed-1/?sp=1",
+    "title": "Image 1 of The Montgomery advertiser (Montgomery, Ala.), January 29, 1920",
+    "date": "1920-01-29",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_fletcher_ver01:data:sn84020645:00517017796:1920012901:0446/full/pct:6.25/0/default.jpg#h=440&w=306",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_fletcher_ver01:data:sn84020645:00517017796:1920012901:0446/full/pct:12.5/0/default.jpg#h=880&w=612"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020645/1920-02-05/ed-1/?sp=1",
+    "title": "Image 1 of The Montgomery advertiser (Montgomery, Ala.), February 5, 1920",
+    "date": "1920-02-05",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_fletcher_ver01:data:sn84020645:00517017796:1920020501:0556/full/pct:6.25/0/default.jpg#h=438&w=307",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_fletcher_ver01:data:sn84020645:00517017796:1920020501:0556/full/pct:12.5/0/default.jpg#h=877&w=614"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn99021999/1920-02-12/ed-1/?sp=1",
+    "title": "Image 1 of Omaha daily bee (Omaha [Neb.]), February 12, 1920",
+    "date": "1920-02-12",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_coreopsis_ver01:data:sn99021999:0027955128A:1920021201:0332/full/pct:6.25/0/default.jpg#h=459&w=346",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_coreopsis_ver01:data:sn99021999:0027955128A:1920021201:0332/full/pct:12.5/0/default.jpg#h=919&w=692"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn92053739/1920-02-19/ed-1/?sp=1",
+    "title": "Image 1 of East St. Louis daily journal (East St. Louis, Ill.), February 19, 1920",
+    "date": "1920-02-19",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_heron_ver01:data:sn92053739:00542864345:1920021901:0548/full/pct:6.25/0/default.jpg#h=467&w=326",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_heron_ver01:data:sn92053739:00542864345:1920021901:0548/full/pct:12.5/0/default.jpg#h=935&w=653"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84038335/1920-02-26/ed-1/?sp=1",
+    "title": "Image 1 of Missouri Valley times (Missouri Valley, Iowa), February 26, 1920",
+    "date": "1920-02-26",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iahi:batch_iahi_landers_ver01:data:sn84038335:00415622843:1920022601:0489/full/pct:3.125/0/default.jpg#h=281&w=214",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iahi:batch_iahi_landers_ver01:data:sn84038335:00415622843:1920022601:0489/full/pct:6.25/0/default.jpg#h=563&w=429",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iahi:batch_iahi_landers_ver01:data:sn84038335:00415622843:1920022601:0489/full/pct:12.5/0/default.jpg#h=1126&w=858"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn92053934/1920-03-04/ed-1/?sp=1",
+    "title": "Image 1 of Rock Island Argus (Rock Island, Ill.), March 4, 1920",
+    "date": "1920-03-04",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_feature_ver01:data:sn92053934:00295872822:1920030401:0042/full/pct:6.25/0/default.jpg#h=424&w=302",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_feature_ver01:data:sn92053934:00295872822:1920030401:0042/full/pct:12.5/0/default.jpg#h=848&w=604"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn92053934/1920-03-11/ed-1/?sp=1",
+    "title": "Image 1 of Rock Island Argus (Rock Island, Ill.), March 11, 1920",
+    "date": "1920-03-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_feature_ver01:data:sn92053934:00295872822:1920031101:0143/full/pct:6.25/0/default.jpg#h=428&w=302",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_feature_ver01:data:sn92053934:00295872822:1920031101:0143/full/pct:12.5/0/default.jpg#h=856&w=605"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn83025779/1920-03-13/ed-1/?sp=1",
+    "title": "Image 1 of The Dallas express (Dallas, Tex.), March 13, 1920",
+    "date": "1920-03-13",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_audi_ver01:data:sn83025779:00200296977:1920031301:0688/full/pct:6.25/0/default.jpg#h=445&w=318",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_audi_ver01:data:sn83025779:00200296977:1920031301:0688/full/pct:12.5/0/default.jpg#h=891&w=637"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn87057928/1920-03-18/ed-1/?sp=1",
+    "title": "Image 1 of Audubon Republican (Audubon, Iowa), March 18, 1920",
+    "date": "1920-03-18",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iahi:batch_iahi_hariyama_ver01:data:sn87057928:00340584533:1920031801:0373/full/pct:6.25/0/default.jpg#h=464&w=357",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iahi:batch_iahi_hariyama_ver01:data:sn87057928:00340584533:1920031801:0373/full/pct:12.5/0/default.jpg#h=928&w=715"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn85038485/1920-03-25/ed-1/?sp=1",
+    "title": "Image 1 of The Birmingham age-herald (Birmingham, Ala.), March 25, 1920",
+    "date": "1920-03-25",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_carver_ver01:data:sn85038485:00340582962:1920032501:0507/full/pct:6.25/0/default.jpg#h=437&w=305",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_carver_ver01:data:sn85038485:00340582962:1920032501:0507/full/pct:12.5/0/default.jpg#h=875&w=611"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn99021999/1920-04-01/ed-1/?sp=1",
+    "title": "Image 1 of Omaha daily bee (Omaha [Neb.]), April 1, 1920",
+    "date": "1920-04-01",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_daleacandida_ver01:data:sn99021999:00212470636:1920040101:0250/full/pct:6.25/0/default.jpg#h=457&w=352",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_daleacandida_ver01:data:sn99021999:00212470636:1920040101:0250/full/pct:12.5/0/default.jpg#h=914&w=704"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn99021999/1920-04-08/ed-1/?sp=1",
+    "title": "Image 1 of Omaha daily bee (Omaha [Neb.]), April 8, 1920",
+    "date": "1920-04-08",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_daleacandida_ver01:data:sn99021999:00212470636:1920040801:0370/full/pct:6.25/0/default.jpg#h=459&w=347",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_daleacandida_ver01:data:sn99021999:00212470636:1920040801:0370/full/pct:12.5/0/default.jpg#h=919&w=694"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn85038485/1920-04-15/ed-1/?sp=1",
+    "title": "Image 1 of The Birmingham age-herald (Birmingham, Ala.), April 15, 1920",
+    "date": "1920-04-15",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_carver_ver01:data:sn85038485:00340582962:1920041501:0976/full/pct:6.25/0/default.jpg#h=435&w=307",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_carver_ver01:data:sn85038485:00340582962:1920041501:0976/full/pct:12.5/0/default.jpg#h=871&w=615"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn83030273/1920-04-22/ed-1/?sp=1",
+    "title": "Image 1 of The Sun and the New York herald (New York [N.Y.]), April 22, 1920",
+    "date": "1920-04-22",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nn:batch_nn_quarterman_ver03:data:sn83030273:00212474538:1920042201:0197/full/pct:6.25/0/default.jpg#h=451&w=335",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nn:batch_nn_quarterman_ver03:data:sn83030273:00212474538:1920042201:0197/full/pct:12.5/0/default.jpg#h=903&w=670"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn99021999/1920-04-26/ed-1/?sp=1",
+    "title": "Image 1 of Omaha daily bee (Omaha [Neb.]), April 26, 1920",
+    "date": "1920-04-26",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_daleacandida_ver01:data:sn99021999:00212470636:1920042601:0762/full/pct:6.25/0/default.jpg#h=462&w=351",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_daleacandida_ver01:data:sn99021999:00212470636:1920042601:0762/full/pct:12.5/0/default.jpg#h=924&w=702"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn92053739/1920-05-06/ed-1/?sp=1",
+    "title": "Image 1 of East St. Louis daily journal (East St. Louis, Ill.), May 6, 1920",
+    "date": "1920-05-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_heron_ver01:data:sn92053739:00542864357:1920050601:0610/full/pct:6.25/0/default.jpg#h=467&w=318",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_heron_ver01:data:sn92053739:00542864357:1920050601:0610/full/pct:12.5/0/default.jpg#h=934&w=637"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn88084272/1920-05-11/ed-1/?sp=1",
+    "title": "Image 1 of El Paso herald (El Paso, Tex.), May 11, 1920, (HOME EDITION)",
+    "date": "1920-05-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_fiji_ver01:data:sn88084272:00294553484:1920051101:0083/full/pct:6.25/0/default.jpg#h=352&w=288",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_fiji_ver01:data:sn88084272:00294553484:1920051101:0083/full/pct:12.5/0/default.jpg#h=705&w=577"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/2023271005/1920-05-13/ed-1/?sp=1",
+    "title": "Image 1 of The Gordon journal (Gordon, Sheridan County, Neb.), May 13, 1920",
+    "date": "1920-05-13",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_junco_ver02:data:2023271005:00542866184:1920051301:1108/full/pct:6.25/0/default.jpg#h=412&w=290",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_junco_ver02:data:2023271005:00542866184:1920051301:1108/full/pct:12.5/0/default.jpg#h=825&w=581"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/2023271005/1920-05-20/ed-1/?sp=1",
+    "title": "Image 1 of The Gordon journal (Gordon, Sheridan County, Neb.), May 20, 1920",
+    "date": "1920-05-20",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_junco_ver02:data:2023271005:00542866184:1920052001:1118/full/pct:6.25/0/default.jpg#h=410&w=287",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_junco_ver02:data:2023271005:00542866184:1920052001:1118/full/pct:12.5/0/default.jpg#h=821&w=575"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn99021999/1920-05-25/ed-1/?sp=1",
+    "title": "Image 1 of Omaha daily bee (Omaha [Neb.]), May 25, 1920",
+    "date": "1920-05-25",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_daleacandida_ver01:data:sn99021999:00212470648:1920052501:0158/full/pct:6.25/0/default.jpg#h=469&w=352",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:nbu:batch_nbu_daleacandida_ver01:data:sn99021999:00212470648:1920052501:0158/full/pct:12.5/0/default.jpg#h=939&w=704"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn85038485/1920-06-06/ed-1/?sp=1",
+    "title": "Image 1 of The Birmingham age-herald (Birmingham, Ala.), June 6, 1920",
+    "date": "1920-06-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_carver_ver01:data:sn85038485:00340582974:1920060601:0834/full/pct:6.25/0/default.jpg#h=437&w=308",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_carver_ver01:data:sn85038485:00340582974:1920060601:0834/full/pct:12.5/0/default.jpg#h=874&w=617"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn88084272/1920-08-06/ed-1/?sp=1",
+    "title": "Image 1 of El Paso herald (El Paso, Tex.), August 6, 1920, (HOME EDITION)",
+    "date": "1920-08-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_fiji_ver01:data:sn88084272:00294553496:1920080601:0376/full/pct:6.25/0/default.jpg#h=349&w=289",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_fiji_ver01:data:sn88084272:00294553496:1920080601:0376/full/pct:12.5/0/default.jpg#h=698&w=579"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020097/1930-03-13/ed-1/?sp=1",
+    "title": "Image 1 of The daily worker (Chicago, Ill.;New York, N.Y.), March 13, 1930, (Final City Edition)",
+    "date": "1930-03-13",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930031301:0279/full/pct:3.125/0/default.jpg#h=273&w=215",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930031301:0279/full/pct:6.25/0/default.jpg#h=547&w=430",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930031301:0279/full/pct:12.5/0/default.jpg#h=1094&w=861"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020097/1930-04-26/ed-1/?sp=1",
+    "title": "Image 1 of The daily worker (Chicago, Ill.;New York, N.Y.), April 26, 1930, (Final City Edition)",
+    "date": "1930-04-26",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930042601:0447/full/pct:3.125/0/default.jpg#h=274&w=212",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930042601:0447/full/pct:6.25/0/default.jpg#h=549&w=424",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930042601:0447/full/pct:12.5/0/default.jpg#h=1098&w=848"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn86063730/1930-05-11/ed-1/?sp=1",
+    "title": "Image 1 of Brownsville herald (Brownsville, Tex.), May 11, 1930",
+    "date": "1930-05-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_evans_ver01:data:sn86063730:00332893725:1930051101:0194/full/pct:3.125/0/default.jpg#h=286&w=214",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_evans_ver01:data:sn86063730:00332893725:1930051101:0194/full/pct:6.25/0/default.jpg#h=572&w=428",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_evans_ver01:data:sn86063730:00332893725:1930051101:0194/full/pct:12.5/0/default.jpg#h=1144&w=857"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020097/1930-05-20/ed-1/?sp=1",
+    "title": "Image 1 of The daily worker (Chicago, Ill.;New York, N.Y.), May 20, 1930, (Final City Edition)",
+    "date": "1930-05-20",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930052001:0541/full/pct:3.125/0/default.jpg#h=274&w=216",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930052001:0541/full/pct:6.25/0/default.jpg#h=548&w=432",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930052001:0541/full/pct:12.5/0/default.jpg#h=1096&w=865"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn86063730/1930-05-25/ed-1/?sp=1",
+    "title": "Image 1 of Brownsville herald (Brownsville, Tex.), May 25, 1930",
+    "date": "1930-05-25",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_evans_ver01:data:sn86063730:00332893725:1930052501:0502/full/pct:3.125/0/default.jpg#h=287&w=216",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_evans_ver01:data:sn86063730:00332893725:1930052501:0502/full/pct:6.25/0/default.jpg#h=575&w=433",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_evans_ver01:data:sn86063730:00332893725:1930052501:0502/full/pct:12.5/0/default.jpg#h=1151&w=866"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020097/1930-06-06/ed-1/?sp=1",
+    "title": "Image 1 of The daily worker (Chicago, Ill.;New York, N.Y.), June 6, 1930, (Final City Edition)",
+    "date": "1930-06-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930060601:0609/full/pct:3.125/0/default.jpg#h=274&w=216",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930060601:0609/full/pct:6.25/0/default.jpg#h=548&w=432",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897652:1930060601:0609/full/pct:12.5/0/default.jpg#h=1096&w=865"
+    ],
+    "language": [
+      "english"
+    ]
+  },
+  {
+    "id": "http://www.loc.gov/resource/sn84020097/1930-08-06/ed-1/?sp=1",
+    "title": "Image 1 of The daily worker (Chicago, Ill.;New York, N.Y.), August 6, 1930, (Final City Edition)",
+    "date": "1930-08-06",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897664:1930080601:0145/full/pct:3.125/0/default.jpg#h=275&w=215",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897664:1930080601:0145/full/pct:6.25/0/default.jpg#h=550&w=431",
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:iune:batch_iune_fluorite_ver01:data:sn84020097:00332897664:1930080601:0145/full/pct:12.5/0/default.jpg#h=1100&w=863"
+    ],
+    "language": [
+      "english"
+    ]
+  }
+]
