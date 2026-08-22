@@ -293,12 +293,12 @@ export default function StorefrontV2() {
             <label><span>Decade</span><select value={decade} onChange={(event) => setDecade(event.target.value)}><option>All decades</option>{uniqueDecades.map((value) => <option key={value}>{value}</option>)}</select></label>
             <label><span>Location</span><select value={region} onChange={(event) => setRegion(event.target.value)}><option>All locations</option>{uniqueRegions.map((value) => <option key={value}>{value}</option>)}</select></label>
             <label><span>Occasion</span><select value={occasion} onChange={(event) => setOccasion(event.target.value)}><option>All occasions</option>{["Birthday", "Anniversary", "History", "Sports", "Hometown"].map((value) => <option key={value}>{value}</option>)}</select></label>
-            <div className="archive-note"><strong>Can’t find it?</strong><p>Add any archive lead to your print bag. We review source quality and reproduction rights before confirming an order.</p></div>
+            <div className="archive-note"><strong>Can’t find it?</strong><p>Add any archive lead to your print bag. Public-domain issues skip permission review; every issue still receives a scan-quality check before printing.</p></div>
           </aside>
 
           <div className="results-area">
             <div className="results-toolbar">
-              <div><p><strong>{filtered.length}</strong> front {filtered.length === 1 ? "page" : "pages"} found</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Live archive results added. Availability still requires review.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged results.</small>}</div>
+              <div><p><strong>{filtered.length}</strong> front {filtered.length === 1 ? "page" : "pages"} found</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Live archive results added. Public-domain issues only need scan-quality review.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged results.</small>}</div>
               <label><span>Sort</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option>Featured</option><option>Oldest first</option><option>Newest first</option><option>City A–Z</option></select></label>
             </div>
 
@@ -333,7 +333,7 @@ export default function StorefrontV2() {
       </section>
 
       <section className="sources-section" id="sources">
-        <div className="sources-heading"><div><p className="eyebrow">A LIBRARY BUILT RESPONSIBLY</p><h2>Discovery is not permission.</h2></div><p>We keep source, date, place, rights basis, review date, and asset quality as separate catalog fields. That keeps a useful research lead from being mistaken for a print we can sell.</p></div>
+        <div className="sources-heading"><div><p className="eyebrow">A LIBRARY BUILT RESPONSIBLY</p><h2>Public domain first. Rights review where needed.</h2></div><p>Older U.S. issues whose copyright has expired are ready for commercial use without permission. We track rights separately so only newer or restricted sources enter a rights-review queue.</p></div>
         <div className="source-grid">{archiveSources.map((source) => <article key={source.id}><span className={`source-role role-${source.role.toLowerCase().replaceAll(" ", "-").replace("—", "")}`}>{source.role}</span><h3>{source.name}</h3><p>{source.coverage}</p><small>{source.rightsGuidance}</small><a href={source.url} target="_blank" rel="noreferrer">Visit source ↗</a></article>)}</div>
       </section>
 
@@ -346,7 +346,7 @@ export default function StorefrontV2() {
         <div className="footer-brand"><span className="brand-mark">FE</span><div><strong>FIRST EDITION</strong><p>Historic front pages, printed for personal milestones.</p></div></div>
         <div><strong>SHOP</strong><a href="#top" onClick={() => choosePath("date")}>Shop by date</a><a href="#top" onClick={() => choosePath("headline")}>Shop by headline</a><a href="#archive">Request an issue</a></div>
         <div><strong>PRINT DETAILS</strong><span>Prints only—no frames</span><span>Archival matte paper</span><span>Ships safely rolled</span></div>
-        <p className="rights-note">Every source record is a research lead until image quality and commercial reproduction rights are documented. Archive access alone never means an issue is cleared for sale.</p>
+        <p className="rights-note">U.S. issues published more than 95 years ago are treated as public domain and need no copyright permission. Newer or restricted material remains unavailable until commercial reproduction rights are documented. Every scan is still checked for print quality.</p>
       </footer>
 
       {selected && (
@@ -363,8 +363,8 @@ export default function StorefrontV2() {
               {selected.sourceUrl && <a className="source-link" href={selected.sourceUrl} target="_blank" rel="noreferrer">View the archive record ↗</a>}
               <fieldset><legend>Choose your print size</legend>{printSizes.map((size) => <label className={selectedSize.label === size.label ? "selected" : ""} key={size.label}><input type="radio" name="size" value={size.label} checked={selectedSize.label === size.label} onChange={() => setSelectedSize(size)} /><span><strong>{size.label}</strong><small>{size.note}</small></span><b>${size.price}</b></label>)}</fieldset>
               <div className="print-only-note"><strong>Print only</strong><span>No frame or mounting hardware is included.</span></div>
-              <button className="add-button" type="button" onClick={addToBag}>{selected.assetStatus === "Print ready" ? `Add print to bag · $${selectedSize.price}` : "Add sourcing request"}</button>
-              <small className="availability-note">No payment is taken now. Final availability is confirmed after archival quality and reproduction rights are reviewed.</small>
+              <button className="add-button" type="button" onClick={addToBag}>{selected.assetStatus === "Print ready" ? `Add print to bag · $${selectedSize.price}` : selected.rightsStatus === "Public domain" ? "Request print preparation" : "Add sourcing request"}</button>
+              <small className="availability-note">{selected.rightsStatus === "Public domain" ? "This issue needs no copyright permission. We only confirm that the available scan will produce a beautiful large-format print." : "No payment is taken now. Final availability is confirmed after archival quality and reproduction rights are reviewed."}</small>
             </div>
           </section>
         </div>

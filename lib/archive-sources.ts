@@ -14,7 +14,7 @@ export const archiveSources: ArchiveSource[] = [
     url: "https://www.loc.gov/newspapers/",
     role: "Ingestion candidate",
     coverage: "Historic United States newspapers with public search, OCR, IIIF images, and structured data.",
-    rightsGuidance: "Strongest automated source. Issues more than 95 years old are generally public domain, but every item and scan still receives a recorded rights and quality check.",
+    rightsGuidance: "Strongest automated source. U.S. issues more than 95 years old are public domain in their entirety and require no copyright permission. They move directly to scan-quality and print-preparation checks.",
   },
   {
     id: "delpher",

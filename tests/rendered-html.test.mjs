@@ -38,7 +38,8 @@ test("server-renders the First Edition storefront", async () => {
   assert.match(html, /Same day, any year/);
   assert.match(html, /Prints only/);
   assert.match(html, /THE SEARCHABLE ARCHIVE/);
-  assert.match(html, /Discovery is not permission/);
+  assert.match(html, /Public domain first/);
+  assert.match(html, /need no copyright permission/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 

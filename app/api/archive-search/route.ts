@@ -112,7 +112,7 @@ export async function GET(request: Request) {
         sourceUrl: id,
         previewUrl: rawImage.replace(/pct:[^/]+/, "pct:12.5"),
         rightsBasis: isOlderThan95Years
-          ? "Published more than 95 years ago; final item and scan review still required before sale."
+          ? `Published in the United States before January 1, ${new Date().getUTCFullYear() - 95}; public domain in its entirety. No copyright permission required.`
           : "No automatic clearance; publication, contributions, and scan rights require review.",
         rightsCheckedAt: new Date().toISOString().slice(0, 10),
         catalogStatus: "Archive lead",
