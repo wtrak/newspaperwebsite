@@ -40,6 +40,9 @@ test("server-renders the First Edition storefront", async () => {
   assert.match(html, /THE SEARCHABLE ARCHIVE/);
   assert.match(html, /Public domain first/);
   assert.match(html, /need no copyright permission/);
+  assert.match(html, /complete sourcing directory/);
+  assert.match(html, /California Digital Newspaper Collection/);
+  assert.match(html, /Old Fulton New York Postcards/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 
@@ -56,4 +59,14 @@ test("catalog records include the operational archive fields", async () => {
   assert.match(source, /sourceUrl\?:/);
   assert.match(source, /rightsBasis\?:/);
   assert.ok((source.match(/id: "/g) ?? []).length >= 10);
+});
+
+test("archive source registry classifies the supplied research links", async () => {
+  const source = await readFile(new URL("../lib/archive-sources.ts", import.meta.url), "utf8");
+  assert.ok((source.match(/id: "/g) ?? []).length >= 25);
+  assert.match(source, /Direct catalog source/);
+  assert.match(source, /Rights-filtered source/);
+  assert.match(source, /Discovery directory/);
+  assert.match(source, /Research only/);
+  assert.match(source, /Legacy \/ inactive/);
 });

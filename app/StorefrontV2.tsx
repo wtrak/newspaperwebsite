@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { FormEvent, useMemo, useState } from "react";
-import { archiveSources } from "../lib/archive-sources";
+import { archiveSources, featuredArchiveSources, sourceRoles } from "../lib/archive-sources";
 import {
   catalog,
   formatIssueDate,
@@ -333,8 +333,18 @@ export default function StorefrontV2() {
       </section>
 
       <section className="sources-section" id="sources">
-        <div className="sources-heading"><div><p className="eyebrow">A LIBRARY BUILT RESPONSIBLY</p><h2>Public domain first. Rights review where needed.</h2></div><p>Older U.S. issues whose copyright has expired are ready for commercial use without permission. We track rights separately so only newer or restricted sources enter a rights-review queue.</p></div>
-        <div className="source-grid">{archiveSources.map((source) => <article key={source.id}><span className={`source-role role-${source.role.toLowerCase().replaceAll(" ", "-").replace("—", "")}`}>{source.role}</span><h3>{source.name}</h3><p>{source.coverage}</p><small>{source.rightsGuidance}</small><a href={source.url} target="_blank" rel="noreferrer">Visit source ↗</a></article>)}</div>
+        <div className="sources-heading"><div><p className="eyebrow">A LIBRARY BUILT RESPONSIBLY</p><h2>Public domain first. Rights review where needed.</h2></div><p>Older U.S. issues whose copyright has expired are ready for commercial use without permission. Every source has a defined job so a search directory or paid database is never confused with a reusable print asset.</p></div>
+        <div className="source-stats" aria-label="Archive source summary"><span><b>{archiveSources.length}</b> sources mapped</span><span><b>{archiveSources.filter((source) => source.role === "Direct catalog source").length}</b> direct catalog sources</span><span><b>{archiveSources.filter((source) => source.role === "Rights-filtered source").length}</b> rights-filtered sources</span></div>
+        <div className="source-grid">{featuredArchiveSources.map((source) => <article key={source.id}><span className={`source-role role-${source.role.toLowerCase().replaceAll(" ", "-")}`}>{source.role}</span><h3>{source.name}</h3><p>{source.coverage}</p><small>{source.rightsGuidance}</small><a href={source.url} target="_blank" rel="noreferrer">Visit source ↗</a></article>)}</div>
+        <details className="source-directory">
+          <summary><span>View the complete sourcing directory</span><b>{archiveSources.length} verified and classified links</b></summary>
+          <div className="source-directory-groups">
+            {sourceRoles.map((role) => {
+              const sources = archiveSources.filter((source) => source.role === role);
+              return <section key={role}><div className="directory-group-title"><h3>{role}</h3><span>{sources.length}</span></div><ul>{sources.map((source) => <li key={source.id}><a href={source.url} target="_blank" rel="noreferrer">{source.name} ↗</a><p>{source.coverage}</p><small>{source.rightsGuidance}</small></li>)}</ul></section>;
+            })}
+          </div>
+        </details>
       </section>
 
       <section className="how-section" id="how-it-works">
