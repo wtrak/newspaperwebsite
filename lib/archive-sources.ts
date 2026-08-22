@@ -71,13 +71,21 @@ export const archiveSources: ArchiveSource[] = [
     featured: true,
   },
   {
+    id: "wikimedia-commons",
+    name: "Wikimedia Commons",
+    url: "https://commons.wikimedia.org/w/index.php?search=newspaper+front+page+&title=Special%3AMediaSearch&type=image&haslicense=unrestricted&fileres=%3E1000",
+    role: "Direct catalog source",
+    coverage: "Freely licensed and public-domain newspaper front-page images from institutions and individual contributors worldwide.",
+    rightsGuidance: "The supplied search is already filtered to unrestricted files. Preserve each file's attribution metadata, then use the visual-fit preflight to reject non-front-pages, weak scans, landscape spreads, and duplicates.",
+    featured: true,
+  },
+  {
     id: "internet-archive",
     name: "Internet Archive",
     url: "https://archive.org/",
     role: "Rights-filtered source",
     coverage: "A broad digital library containing scanned newspapers, magazines, books, microfilm, and community uploads.",
     rightsGuidance: "Use only records with a credible public-domain or commercial-use license and a traceable contributing institution. An uploader's label alone is not sufficient provenance.",
-    featured: true,
   },
   {
     id: "slq",

@@ -428,6 +428,15 @@ footer > div:not(.footer-brand) span, footer a { color: #bdb7aa; }
 .source-stats { margin-bottom: 22px; display: flex; flex-wrap: wrap; gap: 10px; }
 .source-stats span { padding: 9px 12px; border: 1px solid #b8ad99; background: rgba(255,253,248,.55); color: #696155; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .source-stats b { margin-right: 4px; color: var(--red); font-size: 13px; }
+.visual-preflight { margin: 26px 0 30px; padding: 30px; display: grid; grid-template-columns: .9fr 1.1fr; gap: 38px; background: var(--ink); color: var(--white); }
+.visual-preflight > div > span { color: #d8a39d; font-size: 9px; font-weight: 900; letter-spacing: .16em; }
+.visual-preflight h3 { max-width: 520px; margin: 10px 0 12px; font-size: clamp(28px, 3vw, 42px); line-height: 1.02; }
+.visual-preflight p { max-width: 600px; margin: 0; color: #d7d1c5; font: 14px/1.55 var(--font-playfair), Georgia, serif; }
+.visual-preflight ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; border-top: 1px solid #4b4841; border-left: 1px solid #4b4841; }
+.visual-preflight li { min-width: 0; padding: 17px; display: grid; grid-template-columns: auto 1fr; gap: 10px; border-right: 1px solid #4b4841; border-bottom: 1px solid #4b4841; }
+.visual-preflight li b { color: #d8a39d; font-size: 8px; letter-spacing: .1em; }
+.visual-preflight li span { color: #cbc5ba; font-size: 10px; line-height: 1.45; }
+.visual-preflight li strong { display: block; margin-bottom: 4px; color: var(--white); font: 800 16px/1.1 var(--font-playfair), Georgia, serif; }
 .source-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 4px solid var(--ink); }
 .source-grid article { min-height: 310px; padding: 26px 24px; display: flex; flex-direction: column; border-right: 1px solid #b9ad99; background: rgba(255,253,248,.34); }
 .source-grid article:nth-child(4n), .source-grid article:last-child { border-right: 0; }
@@ -473,6 +482,7 @@ footer > div:not(.footer-brand) span, footer a { color: #bdb7aa; }
 @media (max-width: 900px) {
   .journey-hero .hero-copy { padding-top: 54px; }
   .sources-heading { align-items: start; flex-direction: column; }
+  .visual-preflight { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 650px) {
@@ -488,6 +498,8 @@ footer > div:not(.footer-brand) span, footer a { color: #bdb7aa; }
   .source-directory summary::after { position: absolute; right: 8vw; }
   .source-directory ul { grid-template-columns: 1fr; }
   .source-directory-groups { padding-inline: 14px; }
+  .visual-preflight { padding: 22px; }
+  .visual-preflight ol { grid-template-columns: 1fr; }
   .record-audit { grid-template-columns: 1fr; }
   .record-audit span { border-right: 0; border-bottom: 1px solid #c6bcaa; }
   .record-audit span:last-child { border-bottom: 0; }
