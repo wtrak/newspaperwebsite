@@ -29,7 +29,15 @@ export async function POST(request: Request) {
       name?: unknown;
       email?: unknown;
       note?: unknown;
-      items?: Array<{ recordId?: unknown; size?: unknown; price?: unknown }>;
+      items?: Array<{
+        recordId?: unknown;
+        headline?: unknown;
+        publication?: unknown;
+        issueDate?: unknown;
+        sourceUrl?: unknown;
+        size?: unknown;
+        price?: unknown;
+      }>;
     };
 
     const name = typeof payload.name === "string" ? payload.name.trim() : "";
@@ -41,11 +49,24 @@ export async function POST(request: Request) {
       return Response.json({ error: "Name, valid email, and at least one print are required." }, { status: 400 });
     }
 
-    const cleanItems = items.slice(0, 20).map((item) => ({
-      recordId: typeof item.recordId === "string" ? item.recordId : "",
-      size: typeof item.size === "string" ? item.size : "",
-      price: typeof item.price === "number" && Number.isFinite(item.price) ? Math.max(0, Math.round(item.price)) : 0,
-    })).filter((item) => catalog.some((record) => record.id === item.recordId));
+    const allowedPrices = new Set([64, 89, 119]);
+    const cleanItems = items.slice(0, 20).flatMap((item) => {
+      const recordId = typeof item.recordId === "string" ? item.recordId.slice(0, 180) : "";
+      const sourceUrl = typeof item.sourceUrl === "string" ? item.sourceUrl.slice(0, 500) : "";
+      const price = typeof item.price === "number" && allowedPrices.has(item.price) ? item.price : 0;
+      const knownRecord = catalog.some((record) => record.id === recordId);
+      const isLocLead = /^LOC-[A-Za-z0-9._-]+$/.test(recordId) && /^https:\/\/www\.loc\.gov\/resource\//.test(sourceUrl);
+      if (!price || (!knownRecord && !isLocLead)) return [];
+      return [{
+        recordId,
+        headline: typeof item.headline === "string" ? item.headline.trim().slice(0, 240) : "",
+        publication: typeof item.publication === "string" ? item.publication.trim().slice(0, 180) : "",
+        issueDate: typeof item.issueDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(item.issueDate) ? item.issueDate : "",
+        sourceUrl,
+        size: typeof item.size === "string" ? item.size.slice(0, 40) : "",
+        price,
+      }];
+    });
 
     if (cleanItems.length === 0) {
       return Response.json({ error: "No valid archive items were provided." }, { status: 400 });

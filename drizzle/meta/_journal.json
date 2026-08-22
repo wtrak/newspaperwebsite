@@ -8,6 +8,13 @@
       "when": 1787423227733,
       "tag": "0000_complex_baron_strucker",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1787425598461,
+      "tag": "0001_brainy_the_stranger",
+      "breakpoints": true
     }
   ]
 }

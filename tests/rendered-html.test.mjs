@@ -33,9 +33,12 @@ test("server-renders the First Edition storefront", async () => {
   const html = await response.text();
   assert.match(html, /<title>First Edition \| Historic Newspaper Prints<\/title>/i);
   assert.match(html, /FIRST EDITION/);
-  assert.match(html, /A front page from/);
+  assert.match(html, /Shop by date/);
+  assert.match(html, /Shop by headline/);
+  assert.match(html, /Same day, any year/);
   assert.match(html, /Prints only/);
   assert.match(html, /THE SEARCHABLE ARCHIVE/);
+  assert.match(html, /Discovery is not permission/);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 
@@ -49,5 +52,7 @@ test("catalog records include the operational archive fields", async () => {
   assert.match(source, /rightsStatus:/);
   assert.match(source, /assetStatus:/);
   assert.match(source, /sourceReference:/);
+  assert.match(source, /sourceUrl\?:/);
+  assert.match(source, /rightsBasis\?:/);
   assert.ok((source.match(/id: "/g) ?? []).length >= 10);
 });
