@@ -11,6 +11,7 @@ import {
   uniqueDecades,
   uniqueRegions,
 } from "../lib/catalog";
+import { createDateRequestRecord, searchLocArchive, searchLocSameDay } from "../lib/loc-archive";
 
 type SearchPath = "date" | "headline";
 type DateMode = "exact" | "month-day";
@@ -128,28 +129,46 @@ export default function StorefrontV2() {
     event.preventDefault();
     setLiveResults([]);
     setLiveStatus("idle");
+    setDecade("All decades");
+    setRegion("All locations");
+    setOccasion("All occasions");
     document.querySelector("#archive")?.scrollIntoView({ behavior: "smooth" });
 
-    const params = new URLSearchParams();
-    if (searchPath === "date" && dateMode === "exact" && date) {
-      params.set("mode", "date");
-      params.set("date", date);
-    } else if (searchPath === "headline" && headlineQuery.trim()) {
-      params.set("mode", "headline");
-      params.set("q", headlineQuery.trim());
-    } else {
-      return;
-    }
+    if (searchPath === "date" && dateMode === "exact" && !date) return;
+    if (searchPath === "headline" && !headlineQuery.trim()) return;
 
     setLiveStatus("loading");
     try {
-      const response = await fetch(`/api/archive-search?${params}`);
-      if (!response.ok) throw new Error("Archive lookup failed");
-      const payload = await response.json() as { items?: NewspaperRecord[] };
-      setLiveResults(Array.isArray(payload.items) ? payload.items : []);
+      let items: NewspaperRecord[] = [];
+      if (searchPath === "date" && dateMode === "month-day") {
+        items = await searchLocSameDay(month, day);
+      } else {
+        const mode = searchPath === "date" ? "date" : "headline";
+        try {
+          items = await searchLocArchive({ mode, date, query: headlineQuery.trim() });
+        } catch {
+          const params = new URLSearchParams({ mode });
+          if (mode === "date") params.set("date", date);
+          else params.set("q", headlineQuery.trim());
+          const response = await fetch(`/api/archive-search?${params}`);
+          if (!response.ok) throw new Error("Archive lookup failed");
+          const payload = await response.json() as { items?: NewspaperRecord[] };
+          items = Array.isArray(payload.items) ? payload.items : [];
+        }
+      }
+
+      if (searchPath === "date" && dateMode === "exact" && items.length === 0) {
+        items = [createDateRequestRecord(date, locationQuery.trim())];
+      }
+      setLiveResults(items);
       setLiveStatus("done");
     } catch {
-      setLiveStatus("error");
+      if (searchPath === "date" && dateMode === "exact") {
+        setLiveResults([createDateRequestRecord(date, locationQuery.trim())]);
+        setLiveStatus("done");
+      } else {
+        setLiveStatus("error");
+      }
     }
   };
 
@@ -242,7 +261,7 @@ export default function StorefrontV2() {
                 </div>
                 <div className="journey-fields">
                   {dateMode === "exact" ? (
-                    <label><span>The meaningful date</span><input aria-label="Exact date and year" type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
+                    <label><span>The meaningful date</span><input aria-label="Exact date and year" type="date" value={date} onInput={(event) => setDate(event.currentTarget.value)} /></label>
                   ) : (
                     <div className="month-day-fields" aria-label="Month and day">
                       <label><span>Month</span><select value={month} onChange={(event) => setMonth(event.target.value)}>{months.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
@@ -262,7 +281,7 @@ export default function StorefrontV2() {
             )}
           </form>
 
-          <p className="search-explainer">{searchPath === "date" && dateMode === "month-day" ? "Compare the same calendar day across every year already indexed in our catalog." : searchPath === "date" ? "Exact-date searches also check the Library of Congress live archive." : "Headline searches look through titles, summaries, subjects, and archive OCR."}</p>
+          <p className="search-explainer">{searchPath === "date" && dateMode === "month-day" ? "Compare the same calendar day across our catalog and a live sampler of historic decades." : searchPath === "date" ? "Exact-date searches check the live archive; if a page is not indexed yet, you can submit that date for research." : "Headline searches look through titles, summaries, subjects, and archive OCR."}</p>
           <div className="trust-row" aria-label="Product details"><span>Archival-quality paper</span><span>Rights checked before printing</span><span>Prints only—no frames</span></div>
         </div>
 
@@ -298,7 +317,7 @@ export default function StorefrontV2() {
 
           <div className="results-area">
             <div className="results-toolbar">
-              <div><p><strong>{filtered.length}</strong> front {filtered.length === 1 ? "page" : "pages"} found</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Live archive results added. Public-domain issues only need scan-quality review.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged results.</small>}</div>
+              <div><p><strong>{filtered.length}</strong> front {filtered.length === 1 ? "page" : "pages"} found</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Search complete. Archive scans and custom research requests are labeled separately.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged results.</small>}</div>
               <label><span>Sort</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option>Featured</option><option>Oldest first</option><option>Newest first</option><option>City A–Z</option></select></label>
             </div>
 
