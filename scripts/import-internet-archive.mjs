@@ -15,8 +15,11 @@ const argValue = (name) => process.argv.find((argument) => argument.startsWith(`
 const hasFlag = (name) => process.argv.includes(`--${name}`);
 const page = Math.max(1, Number(argValue("page") || 1));
 const rows = Math.max(1, Math.min(100, Number(argValue("limit") || 24)));
+const coverageMode = hasFlag("thin-days");
+const targetPerDay = Math.max(1, Number(argValue("target-per-day") || 4));
 const outputRoot = resolve(projectRoot, argValue("output") || "local-archive");
-const reviewRoot = resolve(outputRoot, "review", "internet-archive", `page-${page}`);
+const reviewLabel = coverageMode ? `calendar-coverage-${targetPerDay}` : `page-${page}`;
+const reviewRoot = resolve(outputRoot, "review", "internet-archive", reviewLabel);
 const previewRoot = resolve(projectRoot, "public", "archive", "internet-archive");
 const catalogPath = resolve(projectRoot, "catalog", "internet_archive_front_pages.json");
 const rejectedIds = new Set((argValue("reject") || "").split(",").map((value) => value.trim()).filter(Boolean));
@@ -45,6 +48,9 @@ function placeIdentity(place, identifier) {
   if (identifier.includes("mapleton-item")) return { city: "Mapleton", region: "Pennsylvania", country: "United States" };
   if (identifier.includes("millheim-journal")) return { city: "Millheim", region: "Pennsylvania", country: "United States" };
   if (identifier.includes("waynesburg-republican")) return { city: "Waynesburg", region: "Pennsylvania", country: "United States" };
+  if (identifier.startsWith("cgl_")) return { city: "Glendale", region: "California", country: "United States" };
+  if (identifier.startsWith("cric_")) return { city: "Richmond", region: "California", country: "United States" };
+  if (identifier.includes("alexandria-gazette")) return { city: "Alexandria", region: "Virginia", country: "United States" };
   if (/cura[cç]ao/i.test(place)) return { city: "Willemstad", region: "Curaçao", country: "Curaçao" };
   return { city: place || "Netherlands", region: "Netherlands", country: "Netherlands" };
 }
@@ -52,7 +58,9 @@ function placeIdentity(place, identifier) {
 async function fetchJson(url) {
   const response = await fetch(url, { headers: { accept: "application/json", "user-agent": userAgent }, signal: AbortSignal.timeout(45000) });
   if (!response.ok) throw new Error(`${response.status} ${url}`);
-  return response.json();
+  const payload = await response.json();
+  if (payload.error) throw new Error(`${payload.error} ${url}`);
+  return payload;
 }
 
 async function searchItems() {
@@ -64,6 +72,100 @@ async function searchItems() {
   url.searchParams.set("output", "json");
   const payload = await fetchJson(url);
   return payload.response?.docs || [];
+}
+
+async function loadCoverage() {
+  const [seed, bulk, internetArchive] = await Promise.all([
+    readFile(resolve(projectRoot, "catalog", "loc_front_pages.json"), "utf8").then(JSON.parse),
+    readFile(resolve(projectRoot, "catalog", "loc_bulk_front_pages.json"), "utf8").then(JSON.parse),
+    readFile(catalogPath, "utf8").then(JSON.parse).catch(() => []),
+  ]);
+  const dates = [...seed, ...bulk].map((record) => record.date).concat(internetArchive.map((record) => record.issueDate));
+  const counts = new Map();
+  for (const date of dates) counts.set(date.slice(5), (counts.get(date.slice(5)) || 0) + 1);
+  return { counts, existingIds: new Set(internetArchive.map((record) => record.id.replace(/^IA-/, ""))) };
+}
+
+function validDateQueries(startYear, monthDay) {
+  return Array.from({ length: Math.min(20, 1931 - startYear) }, (_, index) => startYear + index)
+    .filter((year) => {
+      const date = new Date(`${year}-${monthDay}T00:00:00Z`);
+      return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === `${year}-${monthDay}`;
+    })
+    .map((year) => `date:${year}-${monthDay}`);
+}
+
+async function searchMonthDay(monthDay, needed, existingIds) {
+  const candidates = [];
+  const seen = new Set(existingIds);
+  for (let startYear = 1800; startYear <= 1930 && candidates.length < needed + 1; startYear += 20) {
+    const years = validDateQueries(startYear, monthDay);
+    const url = new URL("https://archive.org/advancedsearch.php");
+    url.searchParams.set("q", `collection:${collection} AND (${years.join(" OR ")})`);
+    for (const field of ["identifier", "title", "date", "year", "creator", "language", "description", "subject"]) url.searchParams.append("fl[]", field);
+    url.searchParams.set("rows", "50");
+    url.searchParams.set("output", "json");
+    const payload = await fetchJson(url);
+    const matches = (payload.response?.docs || []).filter((record) => {
+      const identifier = record.identifier;
+      const exactDay = String(record.date || "").slice(5, 10) === monthDay;
+      if (!identifier || !exactDay || seen.has(identifier)) return false;
+      seen.add(identifier);
+      return true;
+    });
+    const uniquePublications = [];
+    const repeatedPublications = [];
+    const publications = new Set(candidates.map((record) => publicationFromTitle(record.title, String(record.date).slice(0, 10))));
+    for (const record of matches) {
+      const publication = publicationFromTitle(record.title, String(record.date).slice(0, 10));
+      (publications.has(publication) ? repeatedPublications : uniquePublications).push(record);
+      publications.add(publication);
+    }
+    candidates.push(...uniquePublications, ...repeatedPublications);
+  }
+
+  // Some dates, especially February 29, are thin in the miscellaneous
+  // collection but well represented by other newspaper collections at IA.
+  if (candidates.length < needed + 1) {
+    for (let startYear = 1800; startYear <= 1930 && candidates.length < needed + 3; startYear += 20) {
+      const years = validDateQueries(startYear, monthDay);
+      const url = new URL("https://archive.org/advancedsearch.php");
+      url.searchParams.set("q", `mediatype:texts AND (${years.join(" OR ")}) AND (collection:newspapers OR subject:newspaper OR subject:newspapers)`);
+      for (const field of ["identifier", "title", "date", "year", "creator", "language", "description", "subject"]) url.searchParams.append("fl[]", field);
+      url.searchParams.set("rows", "100");
+      url.searchParams.set("output", "json");
+      const payload = await fetchJson(url);
+      const matches = (payload.response?.docs || [])
+        .filter((record) => {
+          const identifier = record.identifier;
+          const exactDay = String(record.date || "").slice(5, 10) === monthDay;
+          if (!identifier || !exactDay || seen.has(identifier)) return false;
+          seen.add(identifier);
+          return true;
+        })
+        .sort((a, b) => {
+          const preferred = /^(?:cgl_|cric_)|alexandria-gazette/.test(a.identifier) ? 0 : 1;
+          const other = /^(?:cgl_|cric_)|alexandria-gazette/.test(b.identifier) ? 0 : 1;
+          return preferred - other;
+        });
+      candidates.push(...matches);
+    }
+  }
+  return candidates.slice(0, needed + 1);
+}
+
+async function searchThinDays() {
+  const coverage = await loadCoverage();
+  const leapYear = new Date(Date.UTC(2024, 0, 1));
+  const needs = [];
+  while (leapYear.getUTCFullYear() === 2024) {
+    const monthDay = leapYear.toISOString().slice(5, 10);
+    const existing = coverage.counts.get(monthDay) || 0;
+    if (existing < targetPerDay) needs.push({ monthDay, needed: targetPerDay - existing });
+    leapYear.setUTCDate(leapYear.getUTCDate() + 1);
+  }
+  const groups = await runPool(needs, 4, ({ monthDay, needed }) => searchMonthDay(monthDay, needed, coverage.existingIds));
+  return { searchRecords: groups.flat(), needs, coverage };
 }
 
 async function mapCandidate(searchRecord) {
@@ -80,7 +182,7 @@ async function mapCandidate(searchRecord) {
   const place = htmlValue(metadata.description, "Plaats van uitgave");
   const identity = placeIdentity(place, identifier);
   const localRelativePath = `print-masters/internet-archive/${date.replaceAll("-", "/")}/${slugify(publication)}--${identifier}--front-page.pdf`;
-  const reviewRelativePath = `review/internet-archive/page-${page}/${identifier}.jpg`;
+  const reviewRelativePath = `review/internet-archive/${reviewLabel}/${identifier}.jpg`;
   return {
     identifier,
     title: metadata.title || searchRecord.title,
@@ -187,14 +289,25 @@ async function main() {
   if (hasFlag("approve") && !hasFlag("download") && savedManifest.length) {
     candidates = savedManifest;
   } else {
-    const searchRecords = await searchItems();
+    const searchRecords = coverageMode ? (await searchThinDays()).searchRecords : await searchItems();
     const mapped = (await runPool(searchRecords, 8, mapCandidate)).filter(Boolean);
     candidates = hasFlag("download") ? await runPool(mapped, 3, prepareCandidate) : mapped;
     await writeFile(manifestPath, `${JSON.stringify(candidates, null, 2)}\n`);
   }
 
   if (hasFlag("approve")) {
-    const approved = candidates.filter((candidate) => candidate.technicalStatus === "ready-for-visual-review" && !rejectedIds.has(candidate.identifier));
+    const eligible = candidates.filter((candidate) => candidate.technicalStatus === "ready-for-visual-review" && !rejectedIds.has(candidate.identifier));
+    let approved = eligible;
+    if (coverageMode) {
+      const { counts } = await loadCoverage();
+      approved = eligible.filter((candidate) => {
+        const monthDay = candidate.date.slice(5);
+        const current = counts.get(monthDay) || 0;
+        if (current >= targetPerDay) return false;
+        counts.set(monthDay, current + 1);
+        return true;
+      });
+    }
     await mkdir(previewRoot, { recursive: true });
     for (const candidate of approved) {
       await copyFile(resolve(outputRoot, candidate.reviewRelativePath), resolve(previewRoot, `${candidate.identifier}.jpg`));
@@ -210,7 +323,8 @@ async function main() {
   const mapped = candidates.length;
   const ready = candidates.filter((candidate) => candidate.technicalStatus === "ready-for-visual-review").length;
   const failed = candidates.filter((candidate) => candidate.technicalStatus === "failed").length;
-  console.log(`Internet Archive page ${page}: ${mapped} public-domain PDFs found, ${ready} ready for visual review, ${failed} failed.`);
+  const scope = coverageMode ? `calendar coverage target ${targetPerDay}` : `page ${page}`;
+  console.log(`Internet Archive ${scope}: ${mapped} public-domain PDFs found, ${ready} ready for visual review, ${failed} failed.`);
 }
 
 main().catch((error) => {

@@ -126,12 +126,35 @@ test("Internet Archive imports are visually approved before catalog publication"
   assert.match(importer, /newspapers_miscellaneous/);
   assert.match(importer, /ready-for-visual-review/);
   assert.match(importer, /hasFlag\("approve"\)/);
+  assert.match(importer, /hasFlag\("thin-days"\)/);
+  assert.match(importer, /targetPerDay/);
   assert.match(importer, /pdftoppm/);
   assert.match(sources, /More than 280,000 dated newspaper issue records/);
-  assert.ok(records.length >= 30);
+  assert.ok(records.length >= 150);
   assert.ok(records.every((record) => record.sourceUrl?.startsWith("https://archive.org/details/") && record.previewUrl?.startsWith("/archive/internet-archive/")));
   for (const record of records) {
     const preview = new URL(`../public${record.previewUrl}`, import.meta.url);
     assert.ok((await stat(preview)).size > 50_000, `${record.id} should have a usable local preview`);
+  }
+});
+
+test("every calendar day has at least four gift-date choices", async () => {
+  const files = [
+    "../catalog/loc_front_pages.json",
+    "../catalog/loc_bulk_front_pages.json",
+    "../catalog/internet_archive_front_pages.json",
+  ];
+  const catalogs = await Promise.all(files.map(async (file) => JSON.parse(await readFile(new URL(file, import.meta.url), "utf8"))));
+  const counts = new Map();
+  for (const record of catalogs.flat()) {
+    const monthDay = (record.issueDate || record.date).slice(5, 10);
+    counts.set(monthDay, (counts.get(monthDay) || 0) + 1);
+  }
+
+  const day = new Date(Date.UTC(2024, 0, 1));
+  while (day.getUTCFullYear() === 2024) {
+    const monthDay = day.toISOString().slice(5, 10);
+    assert.ok((counts.get(monthDay) || 0) >= 4, `${monthDay} should have at least four real pages`);
+    day.setUTCDate(day.getUTCDate() + 1);
   }
 });
