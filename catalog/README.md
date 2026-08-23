@@ -18,3 +18,25 @@ The `month_day` field is stored separately from `issue_date` so a gift shopper c
 ## File naming
 
 Use `publication-city-YYYY-MM-DD-edition` for the slug and asset base name. Keep lightweight previews under `previews/` and original print masters under `masters/` in object storage. Never serve the high-resolution master directly on the public site.
+
+## Local print-master library
+
+The website catalog stays small because it stores metadata and preview links. Full-resolution Library of Congress files belong in the git-ignored `local-archive/` directory or on a dedicated external drive.
+
+```bash
+# Estimate storage for the current catalog
+npm run masters:estimate
+
+# Download every front page as a full-resolution JPEG 2000 master
+npm run masters:download -- --all
+
+# Download only one order, date, or recurring calendar day
+npm run masters:download -- --record=sn84020657
+npm run masters:download -- --date=1912-11-11
+npm run masters:download -- --month-day=11-11
+
+# Put the library on an external drive
+npm run masters:download -- --all --output="/Volumes/Newspaper Masters"
+```
+
+Downloads are resumable. Complete files are skipped, incomplete `.part` files are retried, and `local-archive/inventory/` receives both JSON and CSV inventories with the publication, date, location, source URL, local filename, byte count, SHA-256 checksum, and status. Use `--format=pdf` for LOC PDF derivatives or `--format=both` to retain both JP2 and PDF copies. JP2 is the default preservation/print master and avoids doubling the initial storage requirement.

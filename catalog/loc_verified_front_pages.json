@@ -1,0 +1,38 @@
+[
+  {
+    "id": "https://www.loc.gov/resource/sn84027621/1918-11-11/ed-1/?sp=1",
+    "title": "Image 1 of The Ocala evening star (Ocala, Fla.), 1918-11-11",
+    "date": "1918-11-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:fu:batch_fu_criser_ver02:data:sn84027621:00295865817:1918111101:0488/full/pct:12.5/0/default.jpg"
+    ],
+    "language": ["english"]
+  },
+  {
+    "id": "https://www.loc.gov/resource/sn86064187/1918-11-11/ed-1/?sp=1",
+    "title": "Image 1 of Oklahoma City times (Oklahoma City, Okla.), 1918-11-11",
+    "date": "1918-11-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:okhi:batch_okhi_jenks_ver02:data:sn86064187:00200295122:1918111101:0758/full/pct:12.5/0/default.jpg"
+    ],
+    "language": ["english"]
+  },
+  {
+    "id": "https://www.loc.gov/resource/sn85038485/1905-11-11/ed-1/?sp=1",
+    "title": "Image 1 of The Birmingham age-herald (Birmingham, Ala.), 1905-11-11",
+    "date": "1905-11-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:au:batch_au_davis_ver01:data:sn85038485:00340583590:1905111101:0562/full/pct:6.25/0/default.jpg"
+    ],
+    "language": ["english"]
+  },
+  {
+    "id": "https://www.loc.gov/resource/sn86063730/1922-11-11/ed-1/?sp=1",
+    "title": "Image 1 of The Brownsville herald (Brownsville, Tex.), 1922-11-11",
+    "date": "1922-11-11",
+    "image_url": [
+      "https://tile.loc.gov/image-services/iiif/service:ndnp:txdn:batch_txdn_burnett_ver01:data:sn86063730:00332893981:1922111101:0052/full/pct:12.5/0/default.jpg"
+    ],
+    "language": ["english"]
+  }
+]
