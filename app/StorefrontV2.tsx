@@ -341,7 +341,7 @@ export default function StorefrontV2() {
                       <h3>{record.headline}</h3>
                       <span>{record.publication} · {record.city}{record.region ? `, ${record.region}` : ""}</span>
                       {record.sourceName && <small className="source-chip">SOURCE: {record.sourceName.replace("Library of Congress — ", "")}</small>}
-                      <div><strong>From $64</strong><button type="button" onClick={() => openRecord(record)}>Choose print →</button></div>
+                      <div><strong>From $35</strong><button type="button" onClick={() => openRecord(record)}>Choose print →</button></div>
                     </div>
                   </article>
                 ))}
@@ -411,9 +411,9 @@ export default function StorefrontV2() {
               <div className="record-audit"><span><b>Source</b>{selected.sourceName ?? "Historic newspaper archive"}</span><span><b>Rights</b>{selected.rightsStatus}</span><span><b>Availability</b>Available to print</span></div>
               {selected.sourceUrl && <a className="source-link" href={selected.sourceUrl} target="_blank" rel="noreferrer">View the archive record ↗</a>}
               <fieldset><legend>Choose your print size</legend>{printSizes.map((size) => <label className={selectedSize.label === size.label ? "selected" : ""} key={size.label}><input type="radio" name="size" value={size.label} checked={selectedSize.label === size.label} onChange={() => setSelectedSize(size)} /><span><strong>{size.label}</strong><small>{size.note}</small></span><b>${size.price}</b></label>)}</fieldset>
-              <div className="print-only-note"><strong>Print only</strong><span>No frame or mounting hardware is included.</span></div>
+              <div className="print-only-note"><strong>Print only</strong><span>No frame or mounting hardware is included. The full front page is fitted proportionally without cropping.</span></div>
               <button className="add-button" type="button" onClick={addToBag}>Add print to bag · ${selectedSize.price}</button>
-              <small className="availability-note">This print is available to order and will be quality checked before production.</small>
+              <small className="availability-note">All prices are before shipping. This print will be quality checked before production.</small>
             </div>
           </section>
         </div>
@@ -425,8 +425,8 @@ export default function StorefrontV2() {
             <div className="bag-heading"><div><span>YOUR PRINT ORDER</span><h2 id="bag-title">Print bag</h2></div><button type="button" onClick={() => setBagOpen(false)} aria-label="Close print bag">×</button></div>
             {orderStatus === "sent" ? <div className="order-success"><strong>Order received.</strong><p>We’ll email your secure payment link and production details next.</p><button type="button" onClick={() => { setOrderStatus("idle"); setBagOpen(false); }}>Keep browsing</button></div> : cart.length === 0 ? <div className="bag-empty"><p>Your bag is waiting for a piece of history.</p><button type="button" onClick={() => setBagOpen(false)}>Browse the archive</button></div> : <>
               <div className="bag-lines">{cart.map((line) => <article key={line.key}><NewspaperPreview record={line.record} compact /><div><strong>{line.record.headline}</strong><span>{formatIssueDate(line.record.issueDate)}</span><span>{line.size} · Print only</span><button type="button" onClick={() => setCart((lines) => lines.filter((item) => item.key !== line.key))}>Remove</button></div><b>${line.price}</b></article>)}</div>
-              <div className="bag-total"><span>Subtotal</span><strong>${subtotal}</strong></div>
-              <form className="order-form" onSubmit={submitOrder}><p>Place your order now. We’ll email a secure payment link and production details.</p><label><span>Name</span><input name="name" required autoComplete="name" /></label><label><span>Email</span><input name="email" type="email" required autoComplete="email" /></label><label><span>Gift note or order instructions</span><textarea name="note" rows={3} placeholder="Optional" /></label><button type="submit" disabled={orderStatus === "sending"}>{orderStatus === "sending" ? "Placing order…" : "Place order"}</button>{orderStatus === "error" && <small>We couldn’t save that order. Please try again.</small>}</form>
+              <div className="bag-total"><span>Print subtotal · shipping added separately</span><strong>${subtotal}</strong></div>
+              <form className="order-form" onSubmit={submitOrder}><p>Place your order now. We’ll email a secure payment link with shipping and production details.</p><label><span>Name</span><input name="name" required autoComplete="name" /></label><label><span>Email</span><input name="email" type="email" required autoComplete="email" /></label><label><span>Gift note or order instructions</span><textarea name="note" rows={3} placeholder="Optional" /></label><button type="submit" disabled={orderStatus === "sending"}>{orderStatus === "sending" ? "Placing order…" : "Place order"}</button>{orderStatus === "error" && <small>We couldn’t save that order. Please try again.</small>}</form>
             </>}
           </aside>
         </div>

@@ -92,6 +92,18 @@ test("every catalog listing is directly available as a print", async () => {
   assert.match(catalogSource, /assetStatus: "Print ready", catalogStatus: "Print cleared"/);
 });
 
+test("print sizes use common roll widths and top out at $75 before shipping", async () => {
+  const catalogSource = await readFile(new URL("../lib/catalog.ts", import.meta.url), "utf8");
+  const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
+  const orderApi = await readFile(new URL("../app/api/catalog/route.ts", import.meta.url), "utf8");
+  for (const [size, price] of [["17 × 22 in", 35], ["24 × 36 in", 49], ["36 × 48 in", 62], ["44 × 60 in", 75]]) {
+    assert.match(catalogSource, new RegExp(`${size.replace("×", "×")}.*price: ${price}`));
+  }
+  assert.match(storefront, /From \$35/);
+  assert.match(storefront, /All prices are before shipping/);
+  assert.match(orderApi, /new Set\(\[35, 49, 62, 75\]\)/);
+});
+
 test("the browse catalog is backed by real image records", async () => {
   const raw = await readFile(new URL("../catalog/loc_front_pages.json", import.meta.url), "utf8");
   const records = JSON.parse(raw);

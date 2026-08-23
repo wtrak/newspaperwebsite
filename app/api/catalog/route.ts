@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       return Response.json({ error: "Name, valid email, and at least one print are required." }, { status: 400 });
     }
 
-    const allowedPrices = new Set([64, 89, 119]);
+    const allowedPrices = new Set([35, 49, 62, 75]);
     const cleanItems = items.slice(0, 20).flatMap((item) => {
       const recordId = typeof item.recordId === "string" ? item.recordId.slice(0, 180) : "";
       const sourceUrl = typeof item.sourceUrl === "string" ? item.sourceUrl.slice(0, 500) : "";

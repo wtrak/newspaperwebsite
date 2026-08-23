@@ -34,9 +34,10 @@ export type NewspaperRecord = {
 };
 
 export const printSizes = [
-  { label: "18 × 24 in", price: 64, note: "Classic wall print" },
-  { label: "24 × 36 in", price: 89, note: "Most popular" },
-  { label: "30 × 40 in", price: 119, note: "Statement size" },
+  { label: "17 × 22 in", price: 35, note: "Newspaper scale" },
+  { label: "24 × 36 in", price: 49, note: "Most popular" },
+  { label: "36 × 48 in", price: 62, note: "Large display" },
+  { label: "44 × 60 in", price: 75, note: "Maximum printer width" },
 ] as const;
 
 const demonstrationCatalog: NewspaperRecord[] = [

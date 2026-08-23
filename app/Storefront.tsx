@@ -222,7 +222,7 @@ export default function Storefront() {
                       <p>{formatIssueDate(record.issueDate)}</p>
                       <h3>{record.headline}</h3>
                       <span>{record.publication} · {record.city}, {record.region}</span>
-                      <div><strong>From $64</strong><button type="button" onClick={() => openRecord(record)}>{record.assetStatus === "Print ready" ? "Choose print" : "Request issue"} →</button></div>
+                      <div><strong>From $35</strong><button type="button" onClick={() => openRecord(record)}>{record.assetStatus === "Print ready" ? "Choose print" : "Request issue"} →</button></div>
                     </div>
                   </article>
                 ))}
