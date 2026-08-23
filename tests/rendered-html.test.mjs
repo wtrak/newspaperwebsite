@@ -107,3 +107,14 @@ test("large archive results are progressively revealed", async () => {
   assert.match(storefront, /visibleRecords = filtered\.slice/);
   assert.match(storefront, /Show 48 more/);
 });
+
+test("archive previews enlarge and use a sharper detail image", async () => {
+  const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(storefront, /detailPreviewUrl/);
+  assert.match(storefront, /pct:25/);
+  assert.match(storefront, /Click to enlarge/);
+  assert.match(storefront, /Open larger scan/);
+  assert.match(styles, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.modal-preview \.news-preview \{ width: min\(580px, 100%\)/);
+});

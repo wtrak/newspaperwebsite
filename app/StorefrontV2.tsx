@@ -32,12 +32,18 @@ const months = [
 
 const PAGE_SIZE = 48;
 
-function NewspaperPreview({ record, compact = false }: { record: NewspaperRecord; compact?: boolean }) {
+function detailPreviewUrl(previewUrl: string) {
+  return previewUrl
+    .replace(/\/pct:(?:3\.125|6\.25|12\.5)\//, "/pct:25/")
+    .replace(/#.*$/, "");
+}
+
+function NewspaperPreview({ record, compact = false, detail = false }: { record: NewspaperRecord; compact?: boolean; detail?: boolean }) {
   if (record.previewUrl) {
     return (
-      <div className={`news-preview actual-preview ${compact ? "compact" : ""}`}>
+      <div className={`news-preview actual-preview ${compact ? "compact" : ""} ${detail ? "detail" : ""}`}>
         {/* The source scan is shown as a discovery preview; print readiness is checked separately. */}
-        <img src={record.previewUrl} loading={compact ? "lazy" : "eager"} alt={`Front page of ${record.publication} dated ${formatIssueDate(record.issueDate)}`} />
+        <img src={detail ? detailPreviewUrl(record.previewUrl) : record.previewUrl} loading={compact ? "lazy" : "eager"} alt={`Front page of ${record.publication} dated ${formatIssueDate(record.issueDate)}`} />
       </div>
     );
   }
@@ -337,6 +343,7 @@ export default function StorefrontV2() {
                     <button className="preview-button" type="button" onClick={() => openRecord(record)} aria-label={`View ${record.publication} from ${formatIssueDate(record.issueDate)}`}>
                       {record.featured && <span className="card-badge">ARCHIVE FAVORITE</span>}
                       <NewspaperPreview record={record} compact />
+                      <span className="preview-enlarge">Click to enlarge</span>
                     </button>
                     <div className="catalog-card-copy">
                       <p>{formatIssueDate(record.issueDate)}</p>
@@ -401,7 +408,10 @@ export default function StorefrontV2() {
         <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) setSelected(null); }}>
           <section className="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-title">
             <button className="modal-close" type="button" onClick={() => setSelected(null)} aria-label="Close product details">×</button>
-            <div className="modal-preview"><NewspaperPreview record={selected} /></div>
+            <div className="modal-preview">
+              <NewspaperPreview record={selected} detail />
+              {selected.previewUrl && <a className="full-scan-link" href={detailPreviewUrl(selected.previewUrl)} target="_blank" rel="noreferrer">Open larger scan ↗</a>}
+            </div>
             <div className="modal-copy">
               <p className="eyebrow">{formatIssueDate(selected.issueDate)} · {selected.city}{selected.region ? `, ${selected.region}` : ""}</p>
               <h2 id="product-title">{selected.headline}</h2>
