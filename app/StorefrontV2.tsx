@@ -11,7 +11,7 @@ import {
   uniqueDecades,
   uniqueRegions,
 } from "../lib/catalog";
-import { createDateRequestRecord, createSameDayRequestRecord, searchLocArchive, searchLocSameDay } from "../lib/loc-archive";
+import { searchLocArchive, searchLocSameDay } from "../lib/loc-archive";
 
 type SearchPath = "date" | "headline";
 type DateMode = "exact" | "month-day";
@@ -156,7 +156,6 @@ export default function StorefrontV2() {
       let items: NewspaperRecord[] = [];
       if (searchPath === "date" && dateMode === "month-day") {
         items = await searchLocSameDay(month, day);
-        if (items.length === 0) items = [createSameDayRequestRecord(month, day, locationQuery.trim())];
       } else {
         const mode = searchPath === "date" ? "date" : "headline";
         try {
@@ -172,18 +171,10 @@ export default function StorefrontV2() {
         }
       }
 
-      if (searchPath === "date" && dateMode === "exact" && items.length === 0) {
-        items = [createDateRequestRecord(date, locationQuery.trim())];
-      }
       setLiveResults(items);
       setLiveStatus("done");
     } catch {
-      if (searchPath === "date" && dateMode === "exact") {
-        setLiveResults([createDateRequestRecord(date, locationQuery.trim())]);
-        setLiveStatus("done");
-      } else {
-        setLiveStatus("error");
-      }
+      setLiveStatus("error");
     }
   };
 
@@ -227,7 +218,7 @@ export default function StorefrontV2() {
           })),
         }),
       });
-      if (!response.ok) throw new Error("Request failed");
+      if (!response.ok) throw new Error("Order failed");
       setOrderStatus("sent");
       setCart([]);
     } catch {
@@ -296,7 +287,7 @@ export default function StorefrontV2() {
             )}
           </form>
 
-          <p className="search-explainer">{searchPath === "date" && dateMode === "month-day" ? "Compare the same calendar day across our catalog and a live sampler of historic decades." : searchPath === "date" ? "Exact-date searches check the live archive; if a page is not indexed yet, you can submit that date for research." : "Headline searches look through titles, summaries, subjects, and archive OCR."}</p>
+          <p className="search-explainer">{searchPath === "date" && dateMode === "month-day" ? "Compare the same calendar day across our catalog and a live sampler of historic decades." : searchPath === "date" ? "Exact-date searches check the catalog and the live archive for front pages you can order." : "Headline searches look through titles, summaries, subjects, and archive OCR."}</p>
           <div className="trust-row" aria-label="Product details"><span>Archival-quality paper</span><span>Rights checked before printing</span><span>Prints only—no frames</span></div>
         </div>
 
@@ -327,12 +318,12 @@ export default function StorefrontV2() {
             <label><span>Decade</span><select value={decade} onChange={(event) => setDecade(event.target.value)}><option>All decades</option>{uniqueDecades.map((value) => <option key={value}>{value}</option>)}</select></label>
             <label><span>Location</span><select value={region} onChange={(event) => setRegion(event.target.value)}><option>All locations</option>{uniqueRegions.map((value) => <option key={value}>{value}</option>)}</select></label>
             <label><span>Occasion</span><select value={occasion} onChange={(event) => setOccasion(event.target.value)}><option>All occasions</option>{["Birthday", "Anniversary", "History", "Sports", "Hometown"].map((value) => <option key={value}>{value}</option>)}</select></label>
-            <div className="archive-note"><strong>Can’t find it?</strong><p>Add any archive lead to your print bag. Public-domain issues skip permission review; every issue still receives a scan-quality check before printing.</p></div>
+            <div className="archive-note"><strong>Every listing is available</strong><p>Choose any front page shown here, select a size, and add the print directly to your bag.</p></div>
           </aside>
 
           <div className="results-area">
             <div className="results-toolbar">
-              <div><p><strong>{filtered.filter((record) => record.previewUrl && record.sourceUrl).length}</strong> real front {filtered.filter((record) => record.previewUrl && record.sourceUrl).length === 1 ? "page" : "pages"}{filtered.some((record) => !record.previewUrl) && <> · <strong>{filtered.filter((record) => !record.previewUrl).length}</strong> research {filtered.filter((record) => !record.previewUrl).length === 1 ? "request" : "requests"}</>}</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Search complete. Every archive result shown with an image links to its original record.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged results.</small>}</div>
+              <div><p><strong>{filtered.length}</strong> available front {filtered.length === 1 ? "page" : "pages"}</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Search complete. Every front page shown is available to order.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged prints.</small>}</div>
               <label><span>Sort</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option>Featured</option><option>Oldest first</option><option>Newest first</option><option>City A–Z</option></select></label>
             </div>
 
@@ -350,13 +341,13 @@ export default function StorefrontV2() {
                       <h3>{record.headline}</h3>
                       <span>{record.publication} · {record.city}{record.region ? `, ${record.region}` : ""}</span>
                       {record.sourceName && <small className="source-chip">SOURCE: {record.sourceName.replace("Library of Congress — ", "")}</small>}
-                      <div><strong>{record.previewUrl ? "From $64" : "Research request"}</strong><button type="button" onClick={() => openRecord(record)}>{record.previewUrl ? (record.assetStatus === "Print ready" ? "Choose print" : "Request issue") : "Request research"} →</button></div>
+                      <div><strong>From $64</strong><button type="button" onClick={() => openRecord(record)}>Choose print →</button></div>
                     </div>
                   </article>
                 ))}
               </div>
             ) : (
-              <div className="empty-state"><span>NO EDITION FOUND YET</span><h3>The right page may still be in an outside archive.</h3><p>Try another place, remove a filter, or search a nearby date. New records enter the sellable catalog only after source, image quality, and rights checks.</p><button type="button" onClick={clearFilters}>Browse the full archive</button></div>
+              <div className="empty-state"><span>NO EDITION FOUND</span><h3>Try widening your search.</h3><p>Remove a location filter, search a nearby date, or use “same day, any year” to see more purchasable front pages.</p><button type="button" onClick={clearFilters}>Browse every available print</button></div>
             )}
             {filtered.length > visibleRecords.length && (
               <div className="catalog-pagination">
@@ -399,7 +390,7 @@ export default function StorefrontV2() {
 
       <footer>
         <div className="footer-brand"><span className="brand-mark">FE</span><div><strong>FIRST EDITION</strong><p>Historic front pages, printed for personal milestones.</p></div></div>
-        <div><strong>SHOP</strong><a href="#top" onClick={() => choosePath("date")}>Shop by date</a><a href="#top" onClick={() => choosePath("headline")}>Shop by headline</a><a href="#archive">Request an issue</a></div>
+        <div><strong>SHOP</strong><a href="#top" onClick={() => choosePath("date")}>Shop by date</a><a href="#top" onClick={() => choosePath("headline")}>Shop by headline</a><a href="#archive">Browse all prints</a></div>
         <div><strong>PRINT DETAILS</strong><span>Prints only—no frames</span><span>Archival matte paper</span><span>Ships safely rolled</span></div>
         <p className="rights-note">U.S. issues published more than 95 years ago are treated as public domain and need no copyright permission. Newer or restricted material remains unavailable until commercial reproduction rights are documented. Every scan is still checked for print quality.</p>
       </footer>
@@ -417,12 +408,12 @@ export default function StorefrontV2() {
               <h2 id="product-title">{selected.headline}</h2>
               <p className="publication-line">{selected.publication} · {selected.edition}</p>
               <p>{selected.summary}</p>
-              <div className="record-audit"><span><b>Source</b>{selected.sourceName ?? "Catalog demonstration"}</span><span><b>Rights</b>{selected.rightsStatus}</span><span><b>Asset</b>{selected.assetStatus}</span></div>
+              <div className="record-audit"><span><b>Source</b>{selected.sourceName ?? "Historic newspaper archive"}</span><span><b>Rights</b>{selected.rightsStatus}</span><span><b>Availability</b>Available to print</span></div>
               {selected.sourceUrl && <a className="source-link" href={selected.sourceUrl} target="_blank" rel="noreferrer">View the archive record ↗</a>}
               <fieldset><legend>Choose your print size</legend>{printSizes.map((size) => <label className={selectedSize.label === size.label ? "selected" : ""} key={size.label}><input type="radio" name="size" value={size.label} checked={selectedSize.label === size.label} onChange={() => setSelectedSize(size)} /><span><strong>{size.label}</strong><small>{size.note}</small></span><b>${size.price}</b></label>)}</fieldset>
               <div className="print-only-note"><strong>Print only</strong><span>No frame or mounting hardware is included.</span></div>
-              <button className="add-button" type="button" onClick={addToBag}>{selected.assetStatus === "Print ready" ? `Add print to bag · $${selectedSize.price}` : selected.rightsStatus === "Public domain" ? "Request print preparation" : "Add sourcing request"}</button>
-              <small className="availability-note">{selected.rightsStatus === "Public domain" ? "This issue needs no copyright permission. We only confirm that the available scan will produce a beautiful large-format print." : "No payment is taken now. Final availability is confirmed after archival quality and reproduction rights are reviewed."}</small>
+              <button className="add-button" type="button" onClick={addToBag}>Add print to bag · ${selectedSize.price}</button>
+              <small className="availability-note">This print is available to order and will be quality checked before production.</small>
             </div>
           </section>
         </div>
@@ -431,11 +422,11 @@ export default function StorefrontV2() {
       {bagOpen && (
         <div className="drawer-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) setBagOpen(false); }}>
           <aside className="bag-drawer" role="dialog" aria-modal="true" aria-labelledby="bag-title">
-            <div className="bag-heading"><div><span>YOUR PRINT REQUEST</span><h2 id="bag-title">Print bag</h2></div><button type="button" onClick={() => setBagOpen(false)} aria-label="Close print bag">×</button></div>
-            {orderStatus === "sent" ? <div className="order-success"><strong>Request received.</strong><p>We’ll review the selected editions and follow up before anything is printed or charged.</p><button type="button" onClick={() => { setOrderStatus("idle"); setBagOpen(false); }}>Keep browsing</button></div> : cart.length === 0 ? <div className="bag-empty"><p>Your bag is waiting for a piece of history.</p><button type="button" onClick={() => setBagOpen(false)}>Browse the archive</button></div> : <>
+            <div className="bag-heading"><div><span>YOUR PRINT ORDER</span><h2 id="bag-title">Print bag</h2></div><button type="button" onClick={() => setBagOpen(false)} aria-label="Close print bag">×</button></div>
+            {orderStatus === "sent" ? <div className="order-success"><strong>Order received.</strong><p>We’ll email your secure payment link and production details next.</p><button type="button" onClick={() => { setOrderStatus("idle"); setBagOpen(false); }}>Keep browsing</button></div> : cart.length === 0 ? <div className="bag-empty"><p>Your bag is waiting for a piece of history.</p><button type="button" onClick={() => setBagOpen(false)}>Browse the archive</button></div> : <>
               <div className="bag-lines">{cart.map((line) => <article key={line.key}><NewspaperPreview record={line.record} compact /><div><strong>{line.record.headline}</strong><span>{formatIssueDate(line.record.issueDate)}</span><span>{line.size} · Print only</span><button type="button" onClick={() => setCart((lines) => lines.filter((item) => item.key !== line.key))}>Remove</button></div><b>${line.price}</b></article>)}</div>
-              <div className="bag-total"><span>Estimated subtotal</span><strong>${subtotal}</strong></div>
-              <form className="order-form" onSubmit={submitOrder}><p>Send this print request for an availability check. No payment is taken yet.</p><label><span>Name</span><input name="name" required autoComplete="name" /></label><label><span>Email</span><input name="email" type="email" required autoComplete="email" /></label><label><span>Gift note or special request</span><textarea name="note" rows={3} placeholder="Optional" /></label><button type="submit" disabled={orderStatus === "sending"}>{orderStatus === "sending" ? "Sending…" : "Request availability"}</button>{orderStatus === "error" && <small>We couldn’t save that request. Please try again.</small>}</form>
+              <div className="bag-total"><span>Subtotal</span><strong>${subtotal}</strong></div>
+              <form className="order-form" onSubmit={submitOrder}><p>Place your order now. We’ll email a secure payment link and production details.</p><label><span>Name</span><input name="name" required autoComplete="name" /></label><label><span>Email</span><input name="email" type="email" required autoComplete="email" /></label><label><span>Gift note or order instructions</span><textarea name="note" rows={3} placeholder="Optional" /></label><button type="submit" disabled={orderStatus === "sending"}>{orderStatus === "sending" ? "Placing order…" : "Place order"}</button>{orderStatus === "error" && <small>We couldn’t save that order. Please try again.</small>}</form>
             </>}
           </aside>
         </div>

@@ -71,16 +71,25 @@ test("archive source registry classifies the supplied research links", async () 
   assert.match(source, /Legacy \/ inactive/);
 });
 
-test("date searches have live archive and custom-request fallbacks", async () => {
+test("date searches return only purchasable archive results", async () => {
   const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
   const archive = await readFile(new URL("../lib/loc-archive.ts", import.meta.url), "utf8");
   assert.match(storefront, /searchLocArchive/);
   assert.match(storefront, /searchLocSameDay/);
-  assert.match(storefront, /createDateRequestRecord/);
+  assert.doesNotMatch(storefront, /createDateRequestRecord|createSameDayRequestRecord/);
+  assert.match(storefront, /Every front page shown is available to order/);
+  assert.match(storefront, /Add print to bag/);
+  assert.match(storefront, /Place order/);
   assert.match(storefront, /onInput=\{\(event\) => setDate/);
   assert.match(archive, /image_url\?: string\[\]/);
   assert.match(archive, /representativeYears/);
-  assert.match(archive, /Find this date for me/);
+  assert.match(archive, /item\.rightsStatus === "Public domain"/);
+  assert.doesNotMatch(archive, /createDateRequestRecord|createSameDayRequestRecord/);
+});
+
+test("every catalog listing is directly available as a print", async () => {
+  const catalogSource = await readFile(new URL("../lib/catalog.ts", import.meta.url), "utf8");
+  assert.match(catalogSource, /assetStatus: "Print ready", catalogStatus: "Print cleared"/);
 });
 
 test("the browse catalog is backed by real image records", async () => {

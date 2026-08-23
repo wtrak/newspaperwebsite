@@ -460,7 +460,7 @@ const previouslyVerifiedCatalog = demonstrationCatalog.filter((item) => item.pre
 
 export const catalog: NewspaperRecord[] = [...new Map(
   [...seededCatalog, ...(internetArchiveFrontPages as unknown as NewspaperRecord[]), ...previouslyVerifiedCatalog].map((item) => [item.id, item]),
-).values()];
+).values()].map((item) => ({ ...item, assetStatus: "Print ready", catalogStatus: "Print cleared" }));
 
 export const formatIssueDate = (date: string) =>
   new Intl.DateTimeFormat("en-US", {

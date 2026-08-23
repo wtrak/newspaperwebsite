@@ -31,7 +31,7 @@ export const archiveSources: ArchiveSource[] = [
     url: "https://cdnc.ucr.edu/",
     role: "Direct catalog source",
     coverage: "California newspapers from 1846 to the present, with searchable OCR and page images.",
-    rightsGuidance: "The collection states that its pre-1930 newspapers are public domain with no use restrictions and requests source credit when images are reproduced.",
+    rightsGuidance: "The collection states that its pre-1930 newspapers are public domain with no use restrictions and asks for source credit when images are reproduced.",
     featured: true,
   },
   {
@@ -239,7 +239,7 @@ export const archiveSources: ArchiveSource[] = [
     url: "https://mhs.mt.gov/research/collections/newspapers/mtnews",
     role: "Discovery directory",
     coverage: "Historic Montana newspapers and links to state and national digitization projects.",
-    rightsGuidance: "Use to find titles and dates. Montana Historical Society requests written reuse permission for its reproductions, so obtain a permitted public-domain scan source before sale.",
+    rightsGuidance: "Use to find titles and dates. Montana Historical Society requires written reuse permission for its reproductions, so obtain a permitted public-domain scan source before sale.",
   },
   {
     id: "newslink",

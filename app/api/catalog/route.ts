@@ -87,7 +87,7 @@ export async function POST(request: Request) {
 
     return Response.json({ id, status: "received" }, { status: 201 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to save print request.";
+    const message = error instanceof Error ? error.message : "Unable to save the print order.";
     return Response.json({ error: message }, { status: 500 });
   }
 }

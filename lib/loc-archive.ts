@@ -67,14 +67,14 @@ export function mapLocResult(item: LocSearchItem, mode: LocSearchMode, query = "
     headline: mode === "headline" ? `Front page mentioning “${query}”` : `Front page from ${item.date}`,
     summary: mode === "headline"
       ? `A Library of Congress OCR search found this front page for “${query}.” Open the source scan to inspect the original wording and placement.`
-      : "A front page from the requested date. Open the source scan to discover the stories that shared this meaningful day.",
+      : "A front page from the chosen date. Open the source scan to discover the stories that shared this meaningful day.",
     edition: "Front Page",
     occasion: "History",
     decade: `${Math.floor(year / 10) * 10}s`,
     language: titleCase(item.language?.[0] || "English"),
     keywords: mode === "headline" ? [query, "OCR archive match"] : ["exact date", item.date],
     rightsStatus: isPublicDomain ? "Public domain" : "Rights review",
-    assetStatus: "Source requested",
+    assetStatus: isPublicDomain ? "Print ready" : "Restoration needed",
     sourceReference: sourceReference(id),
     sourceName: "Library of Congress — Chronicling America",
     sourceUrl: id,
@@ -125,6 +125,7 @@ export async function searchLocArchive({
     .filter((item) => mode !== "date" || item.date === date)
     .map((item, index) => mapLocResult(item, mode, query, index))
     .filter((item): item is NewspaperRecord => Boolean(item))
+    .filter((item) => item.rightsStatus === "Public domain")
     .slice(0, limit);
 }
 
@@ -146,42 +147,4 @@ export async function searchLocSameDay(month: string, day: string) {
     seen.add(record.id);
     return true;
   });
-}
-
-export function createDateRequestRecord(date: string, location = ""): NewspaperRecord {
-  const year = Number(date.slice(0, 4));
-  return {
-    id: `request-${date}-${location.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "anywhere"}`,
-    issueDate: date,
-    publication: "Custom archive search",
-    city: location || "Any location",
-    region: "",
-    country: "",
-    headline: "Find this date for me",
-    summary: "This date is not yet in the instant catalog. Add the request and we will search the mapped newspaper archives for the strongest printable front page.",
-    edition: "Front-page request",
-    occasion: "Birthday",
-    decade: `${Math.floor(year / 10) * 10}s`,
-    language: "English",
-    keywords: ["custom date", date, location],
-    rightsStatus: "Rights review",
-    assetStatus: "Source requested",
-    sourceReference: `REQUEST-${date}`,
-    catalogStatus: "Archive lead",
-    featured: true,
-    accent: "gold",
-  };
-}
-
-export function createSameDayRequestRecord(month: string, day: string, location = ""): NewspaperRecord {
-  const paddedDay = day.padStart(2, "0");
-  return {
-    ...createDateRequestRecord(`1920-${month}-${paddedDay}`, location),
-    id: `request-same-day-${month}-${paddedDay}-${location.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "anywhere"}`,
-    headline: `Research ${month}/${paddedDay} across the years`,
-    summary: "No instant scans loaded this time. Submit this calendar day and we will search the mapped archives across multiple years and locations.",
-    edition: "Same-day research request",
-    keywords: ["same day", month, paddedDay, location],
-    sourceReference: `REQUEST-SAME-DAY-${month}-${paddedDay}`,
-  };
 }
