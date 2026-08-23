@@ -1,5 +1,6 @@
 import locFrontPages from "../catalog/loc_front_pages.json";
 import locBulkFrontPages from "../catalog/loc_bulk_front_pages.json";
+import internetArchiveFrontPages from "../catalog/internet_archive_front_pages.json";
 import { mapLocResult } from "./loc-archive";
 
 export type RightsStatus = "Public domain" | "Licensed" | "Rights review";
@@ -458,7 +459,7 @@ const seededCatalog = [...locFrontPages, ...locBulkFrontPages]
 const previouslyVerifiedCatalog = demonstrationCatalog.filter((item) => item.previewUrl && item.sourceUrl);
 
 export const catalog: NewspaperRecord[] = [...new Map(
-  [...seededCatalog, ...previouslyVerifiedCatalog].map((item) => [item.id, item]),
+  [...seededCatalog, ...(internetArchiveFrontPages as unknown as NewspaperRecord[]), ...previouslyVerifiedCatalog].map((item) => [item.id, item]),
 ).values()];
 
 export const formatIssueDate = (date: string) =>

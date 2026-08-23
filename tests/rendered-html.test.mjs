@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
 async function getWorker() {
@@ -117,4 +117,21 @@ test("archive previews enlarge and use a sharper detail image", async () => {
   assert.match(storefront, /Open larger scan/);
   assert.match(styles, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.modal-preview \.news-preview \{ width: min\(580px, 100%\)/);
+});
+
+test("Internet Archive imports are visually approved before catalog publication", async () => {
+  const importer = await readFile(new URL("../scripts/import-internet-archive.mjs", import.meta.url), "utf8");
+  const sources = await readFile(new URL("../lib/archive-sources.ts", import.meta.url), "utf8");
+  const records = JSON.parse(await readFile(new URL("../catalog/internet_archive_front_pages.json", import.meta.url), "utf8"));
+  assert.match(importer, /newspapers_miscellaneous/);
+  assert.match(importer, /ready-for-visual-review/);
+  assert.match(importer, /hasFlag\("approve"\)/);
+  assert.match(importer, /pdftoppm/);
+  assert.match(sources, /More than 280,000 dated newspaper issue records/);
+  assert.ok(records.length >= 30);
+  assert.ok(records.every((record) => record.sourceUrl?.startsWith("https://archive.org/details/") && record.previewUrl?.startsWith("/archive/internet-archive/")));
+  for (const record of records) {
+    const preview = new URL(`../public${record.previewUrl}`, import.meta.url);
+    assert.ok((await stat(preview)).size > 50_000, `${record.id} should have a usable local preview`);
+  }
 });

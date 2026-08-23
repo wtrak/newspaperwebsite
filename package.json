@@ -16,6 +16,7 @@
     "catalog:build:seed": "node scripts/build-loc-catalog.mjs",
     "masters:estimate": "node scripts/download-print-masters.mjs --all --estimate",
     "masters:download": "node scripts/download-print-masters.mjs",
+    "archive:internet": "node scripts/import-internet-archive.mjs",
     "sources:wikimedia": "node scripts/wikimedia-preflight.mjs"
   },
   "dependencies": {

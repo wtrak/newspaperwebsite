@@ -81,11 +81,12 @@ export const archiveSources: ArchiveSource[] = [
   },
   {
     id: "internet-archive",
-    name: "Internet Archive",
-    url: "https://archive.org/",
-    role: "Rights-filtered source",
-    coverage: "A broad digital library containing scanned newspapers, magazines, books, microfilm, and community uploads.",
-    rightsGuidance: "Use only records with a credible public-domain or commercial-use license and a traceable contributing institution. An uploader's label alone is not sufficient provenance.",
+    name: "Internet Archive — Miscellaneous Newspapers",
+    url: "https://archive.org/details/newspapers_miscellaneous",
+    role: "Direct catalog source",
+    coverage: "More than 280,000 dated newspaper issue records, many with compact downloadable PDFs and complete front-page scans.",
+    rightsGuidance: "Import pre-1931 issues as public-domain newspaper content, then require a complete portrait front page and sufficient scan resolution before the issue appears in the sellable catalog.",
+    featured: true,
   },
   {
     id: "slq",
