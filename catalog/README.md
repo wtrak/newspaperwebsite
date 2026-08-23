@@ -30,6 +30,9 @@ npm run masters:estimate
 # Download every front page as a full-resolution JPEG 2000 master
 npm run masters:download -- --all
 
+# Retry only files that are not yet safely stored
+npm run masters:download -- --only-missing --timeout-ms=600000
+
 # Download only one order, date, or recurring calendar day
 npm run masters:download -- --record=sn84020657
 npm run masters:download -- --date=1912-11-11
@@ -39,4 +42,4 @@ npm run masters:download -- --month-day=11-11
 npm run masters:download -- --all --output="/Volumes/Newspaper Masters"
 ```
 
-Downloads are resumable. Complete files are skipped, incomplete `.part` files are retried, and `local-archive/inventory/` receives both JSON and CSV inventories with the publication, date, location, source URL, local filename, byte count, SHA-256 checksum, and status. Use `--format=pdf` for LOC PDF derivatives or `--format=both` to retain both JP2 and PDF copies. JP2 is the default preservation/print master and avoids doubling the initial storage requirement.
+Downloads are resumable. Complete files are skipped, and incomplete `.part` files continue in verified byte ranges instead of restarting. `local-archive/inventory/` receives both JSON and CSV inventories with the publication, date, location, source URL, local filename, byte count, SHA-256 checksum, and status. Use `--format=pdf` for LOC PDF derivatives or `--format=both` to retain both JP2 and PDF copies. JP2 is the default preservation/print master and avoids doubling the initial storage requirement.

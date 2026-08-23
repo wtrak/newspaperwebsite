@@ -64,8 +64,16 @@ async function sha256(path) {
 async function writeInventory(outputRoot, rows) {
   const inventoryRoot = resolve(outputRoot, "inventory");
   await mkdir(inventoryRoot, { recursive: true });
-  const sorted = [...rows].sort((a, b) => a.issueDate.localeCompare(b.issueDate) || a.publication.localeCompare(b.publication));
-  await writeFile(resolve(inventoryRoot, "print-masters.json"), `${JSON.stringify(sorted, null, 2)}\n`);
+  const inventoryPath = resolve(inventoryRoot, "print-masters.json");
+  const existing = await readFile(inventoryPath, "utf8").then(JSON.parse).catch(() => []);
+  const merged = new Map(existing.map((row) => [`${row.sourceUrl}:${row.format}`, row]));
+  for (const row of rows) {
+    const key = `${row.sourceUrl}:${row.format}`;
+    if (merged.get(key)?.status === "stored" && row.status === "pending") continue;
+    merged.set(key, row);
+  }
+  const sorted = [...merged.values()].sort((a, b) => a.issueDate.localeCompare(b.issueDate) || a.publication.localeCompare(b.publication));
+  await writeFile(inventoryPath, `${JSON.stringify(sorted, null, 2)}\n`);
   const fields = ["status", "issueDate", "publication", "city", "region", "lccn", "edition", "format", "bytes", "sha256", "localPath", "sourceUrl", "masterUrl", "downloadedAt", "error"];
   const quote = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
   const csv = [fields.join(","), ...sorted.map((row) => fields.map((field) => quote(row[field])).join(","))].join("\n");
@@ -81,20 +89,40 @@ async function downloadOne(job, outputRoot, attempt = 0) {
     if (existing?.size) {
       return { ...job, status: "stored", bytes: existing.size, sha256: await sha256(absolutePath), downloadedAt: new Date(existing.mtimeMs).toISOString(), error: "" };
     }
-    const response = await fetch(job.masterUrl, { headers: { "user-agent": userAgent }, signal: AbortSignal.timeout(120000) });
-    if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);
-    await rm(partialPath, { force: true });
-    await pipeline(response.body, createWriteStream(partialPath, { flags: "wx" }));
+    const chunkBytes = argValue("chunk-kb")
+      ? Math.max(16, Number(argValue("chunk-kb"))) * 1024
+      : Math.max(1, Number(argValue("chunk-mb") || 4)) * 1024 * 1024;
+    let partialBytes = (await stat(partialPath).catch(() => null))?.size || 0;
+    let totalBytes = Number.POSITIVE_INFINITY;
+    while (partialBytes < totalBytes) {
+      const response = await fetch(job.masterUrl, {
+        headers: {
+          "user-agent": userAgent,
+          range: `bytes=${partialBytes}-${partialBytes + chunkBytes - 1}`,
+        },
+        signal: AbortSignal.timeout(Number(argValue("timeout-ms") || 120000)),
+      });
+      if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);
+      if (response.status === 200 && partialBytes > 0) {
+        await rm(partialPath, { force: true });
+        partialBytes = 0;
+      }
+      const contentRange = response.headers.get("content-range");
+      totalBytes = Number(contentRange?.match(/\/(\d+)$/)?.[1] || response.headers.get("content-length") || 0);
+      await pipeline(response.body, createWriteStream(partialPath, { flags: partialBytes ? "a" : "w" }));
+      partialBytes = (await stat(partialPath)).size;
+      if (!Number.isFinite(totalBytes) || totalBytes <= 0) totalBytes = partialBytes;
+    }
     await rename(partialPath, absolutePath);
     const file = await stat(absolutePath);
     return { ...job, status: "stored", bytes: file.size, sha256: await sha256(absolutePath), downloadedAt: new Date().toISOString(), error: "" };
   } catch (error) {
-    await rm(partialPath, { force: true }).catch(() => {});
     if (attempt < 3) {
       await new Promise((resolveDelay) => setTimeout(resolveDelay, 1500 * 2 ** attempt));
       return downloadOne(job, outputRoot, attempt + 1);
     }
-    return { ...job, status: "failed", bytes: 0, sha256: "", downloadedAt: "", error: error instanceof Error ? error.message : "Download failed" };
+    const partialBytes = (await stat(partialPath).catch(() => null))?.size || 0;
+    return { ...job, status: "failed", bytes: partialBytes, sha256: "", downloadedAt: "", error: error instanceof Error ? error.message : "Download failed" };
   }
 }
 
@@ -121,7 +149,7 @@ function selectRecords(records) {
     if (recordNeedle && !`${record.id} ${record.title}`.toLowerCase().includes(recordNeedle)) return false;
     return true;
   });
-  if (!hasFlag("all") && !date && !monthDay && !recordNeedle && !limit) return [];
+  if (!hasFlag("all") && !hasFlag("only-missing") && !date && !monthDay && !recordNeedle && !limit) return [];
   if (limit > 0) selected = selected.slice(0, limit);
   return selected;
 }
@@ -155,7 +183,7 @@ async function main() {
   }
   if (hasFlag("estimate")) return estimate(records);
 
-  const jobs = records.flatMap((record) => formats.map((format) => {
+  let jobs = records.flatMap((record) => formats.map((format) => {
     const identity = parsePublication(record.title);
     const sourceUrl = record.id;
     return {
@@ -174,6 +202,15 @@ async function main() {
       error: "",
     };
   }));
+  if (hasFlag("only-missing")) {
+    const existing = await readFile(resolve(outputRoot, "inventory/print-masters.json"), "utf8").then(JSON.parse).catch(() => []);
+    const stored = new Set(existing.filter((row) => row.status === "stored").map((row) => `${row.sourceUrl}:${row.format}`));
+    jobs = jobs.filter((job) => !stored.has(`${job.sourceUrl}:${job.format}`));
+    if (jobs.length === 0) {
+      console.log("Every selected print master is already stored.");
+      return;
+    }
+  }
   if (hasFlag("dry-run")) {
     await writeInventory(outputRoot, jobs);
     console.log(`Indexed ${jobs.length.toLocaleString()} planned files without downloading them.`);
@@ -183,7 +220,7 @@ async function main() {
   const results = [];
   let completed = 0;
   let stored = 0;
-  await runPool(jobs, Math.max(1, Math.min(6, Number(argValue("concurrency") || 3))), (job) => downloadOne(job, outputRoot), async (result) => {
+  await runPool(jobs, Math.max(1, Math.min(10, Number(argValue("concurrency") || 3))), (job) => downloadOne(job, outputRoot), async (result) => {
     results.push(result);
     completed += 1;
     if (result.status === "stored") stored += 1;
