@@ -92,7 +92,7 @@ test("every catalog listing is directly available as a print", async () => {
   assert.match(catalogSource, /assetStatus: "Print ready", catalogStatus: "Print cleared"/);
 });
 
-test("print sizes use standard printer presets and top out at $75 before shipping", async () => {
+test("print sizes keep production presets internal and customer copy simple", async () => {
   const catalogSource = await readFile(new URL("../lib/catalog.ts", import.meta.url), "utf8");
   const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
   const orderApi = await readFile(new URL("../app/api/catalog/route.ts", import.meta.url), "utf8");
@@ -102,6 +102,9 @@ test("print sizes use standard printer presets and top out at $75 before shippin
   for (const preset of ["ANSI C", "ARCH D", "ANSI E", "ARCH E"]) assert.match(catalogSource, new RegExp(preset));
   assert.match(storefront, /From \$35/);
   assert.match(storefront, /All prices are before shipping/);
+  assert.doesNotMatch(storefront, /paper roll|44-in roll|ANSI or ARCH preset|Standard printer sizes/i);
+  assert.match(storefront, /Four print-only sizes/);
+  assert.match(storefront, /No frame or mounting hardware is included/);
   assert.match(orderApi, /new Set\(\[35, 49, 62, 75\]\)/);
 });
 

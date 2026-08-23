@@ -361,7 +361,7 @@ export default function StorefrontV2() {
 
       <section className="story-band">
         <div><p className="eyebrow">WHY DATE-FIRST WORKS</p><blockquote>“The surprise isn’t the date. It’s discovering what the world was talking about that day.”</blockquote></div>
-        <div className="quality-card"><span>THE PRINT</span><h3>Made for the wall, without the frame.</h3><p>Each cleared front page is prepared and printed on heavyweight archival matte paper with generous margins for easy display or custom framing later.</p><ul><li>Large-format pigment printing</li><li>Three print-only sizes</li><li>Protective rolled shipping</li><li>Quality checked by hand</li></ul></div>
+        <div className="quality-card"><span>THE PRINT</span><h3>Made for the wall, without the frame.</h3><p>Each cleared front page is prepared and printed on heavyweight archival matte paper with generous margins for easy display or custom framing later.</p><ul><li>Large-format pigment printing</li><li>Four print-only sizes</li><li>Protective rolled shipping</li><li>Quality checked by hand</li></ul></div>
       </section>
 
       <section className="sources-section" id="sources">
@@ -411,7 +411,7 @@ export default function StorefrontV2() {
               <div className="record-audit"><span><b>Source</b>{selected.sourceName ?? "Historic newspaper archive"}</span><span><b>Rights</b>{selected.rightsStatus}</span><span><b>Availability</b>Available to print</span></div>
               {selected.sourceUrl && <a className="source-link" href={selected.sourceUrl} target="_blank" rel="noreferrer">View the archive record ↗</a>}
               <fieldset><legend>Choose your print size</legend>{printSizes.map((size) => <label className={selectedSize.label === size.label ? "selected" : ""} key={size.label}><input type="radio" name="size" value={size.label} checked={selectedSize.label === size.label} onChange={() => setSelectedSize(size)} /><span><strong>{size.label}</strong><small>{size.note}</small></span><b>${size.price}</b></label>)}</fieldset>
-              <div className="print-only-note"><strong>Standard printer sizes</strong><span>Each option uses an ANSI or ARCH preset. The full front page is fitted proportionally without cropping.</span></div>
+              <div className="print-only-note"><strong>Print only</strong><span>No frame or mounting hardware is included. The full front page is fitted proportionally without cropping.</span></div>
               <button className="add-button" type="button" onClick={addToBag}>Add print to bag · ${selectedSize.price}</button>
               <small className="availability-note">All prices are before shipping. This print will be quality checked before production.</small>
             </div>
