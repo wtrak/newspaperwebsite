@@ -34,10 +34,10 @@ export type NewspaperRecord = {
 };
 
 export const printSizes = [
-  { label: "17 × 22 in", price: 35, note: "Newspaper scale" },
-  { label: "24 × 36 in", price: 49, note: "Most popular" },
-  { label: "36 × 48 in", price: 62, note: "Large display" },
-  { label: "44 × 60 in", price: 75, note: "Maximum printer width" },
+  { label: "17 × 22 in", price: 35, note: "ANSI C · Newspaper scale" },
+  { label: "24 × 36 in", price: 49, note: "ARCH D · Most popular" },
+  { label: "34 × 44 in", price: 62, note: "ANSI E · Uses the 44-in roll" },
+  { label: "36 × 48 in", price: 75, note: "ARCH E · Largest print" },
 ] as const;
 
 const demonstrationCatalog: NewspaperRecord[] = [

@@ -92,13 +92,14 @@ test("every catalog listing is directly available as a print", async () => {
   assert.match(catalogSource, /assetStatus: "Print ready", catalogStatus: "Print cleared"/);
 });
 
-test("print sizes use common roll widths and top out at $75 before shipping", async () => {
+test("print sizes use standard printer presets and top out at $75 before shipping", async () => {
   const catalogSource = await readFile(new URL("../lib/catalog.ts", import.meta.url), "utf8");
   const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
   const orderApi = await readFile(new URL("../app/api/catalog/route.ts", import.meta.url), "utf8");
-  for (const [size, price] of [["17 × 22 in", 35], ["24 × 36 in", 49], ["36 × 48 in", 62], ["44 × 60 in", 75]]) {
+  for (const [size, price] of [["17 × 22 in", 35], ["24 × 36 in", 49], ["34 × 44 in", 62], ["36 × 48 in", 75]]) {
     assert.match(catalogSource, new RegExp(`${size.replace("×", "×")}.*price: ${price}`));
   }
+  for (const preset of ["ANSI C", "ARCH D", "ANSI E", "ARCH E"]) assert.match(catalogSource, new RegExp(preset));
   assert.match(storefront, /From \$35/);
   assert.match(storefront, /All prices are before shipping/);
   assert.match(orderApi, /new Set\(\[35, 49, 62, 75\]\)/);
