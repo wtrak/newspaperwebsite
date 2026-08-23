@@ -12,7 +12,8 @@
     "test": "npm run build && node --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "catalog:build": "node scripts/build-loc-catalog.mjs",
+    "catalog:build": "node scripts/build-loc-bulk-catalog.mjs",
+    "catalog:build:seed": "node scripts/build-loc-catalog.mjs",
     "sources:wikimedia": "node scripts/wikimedia-preflight.mjs"
   },
   "dependencies": {

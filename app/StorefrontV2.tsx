@@ -30,12 +30,14 @@ const months = [
   ["09", "September"], ["10", "October"], ["11", "November"], ["12", "December"],
 ];
 
+const PAGE_SIZE = 48;
+
 function NewspaperPreview({ record, compact = false }: { record: NewspaperRecord; compact?: boolean }) {
   if (record.previewUrl) {
     return (
       <div className={`news-preview actual-preview ${compact ? "compact" : ""}`}>
         {/* The source scan is shown as a discovery preview; print readiness is checked separately. */}
-        <img src={record.previewUrl} alt={`Front page of ${record.publication} dated ${formatIssueDate(record.issueDate)}`} />
+        <img src={record.previewUrl} loading={compact ? "lazy" : "eager"} alt={`Front page of ${record.publication} dated ${formatIssueDate(record.issueDate)}`} />
       </div>
     );
   }
@@ -70,6 +72,7 @@ export default function StorefrontV2() {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [bagOpen, setBagOpen] = useState(false);
   const [orderStatus, setOrderStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [visibleLimit, setVisibleLimit] = useState(PAGE_SIZE);
 
   const allRecords = useMemo(() => {
     const seen = new Set<string>();
@@ -108,8 +111,11 @@ export default function StorefrontV2() {
     });
   }, [allRecords, searchPath, dateMode, date, month, day, headlineQuery, locationQuery, decade, region, occasion, sort]);
 
+  const visibleRecords = filtered.slice(0, visibleLimit);
+
   const choosePath = (path: SearchPath) => {
     setSearchPath(path);
+    setVisibleLimit(PAGE_SIZE);
     setLiveResults([]);
     setLiveStatus("idle");
   };
@@ -122,12 +128,14 @@ export default function StorefrontV2() {
     setRegion("All locations");
     setOccasion("All occasions");
     setLiveResults([]);
+    setVisibleLimit(PAGE_SIZE);
     setLiveStatus("idle");
   };
 
   const runSearch = async (event: FormEvent) => {
     event.preventDefault();
     setLiveResults([]);
+    setVisibleLimit(PAGE_SIZE);
     setLiveStatus("idle");
     setDecade("All decades");
     setRegion("All locations");
@@ -324,7 +332,7 @@ export default function StorefrontV2() {
 
             {filtered.length > 0 ? (
               <div className="catalog-grid">
-                {filtered.map((record) => (
+                {visibleRecords.map((record) => (
                   <article className="catalog-card" key={record.id}>
                     <button className="preview-button" type="button" onClick={() => openRecord(record)} aria-label={`View ${record.publication} from ${formatIssueDate(record.issueDate)}`}>
                       {record.featured && <span className="card-badge">ARCHIVE FAVORITE</span>}
@@ -342,6 +350,12 @@ export default function StorefrontV2() {
               </div>
             ) : (
               <div className="empty-state"><span>NO EDITION FOUND YET</span><h3>The right page may still be in an outside archive.</h3><p>Try another place, remove a filter, or search a nearby date. New records enter the sellable catalog only after source, image quality, and rights checks.</p><button type="button" onClick={clearFilters}>Browse the full archive</button></div>
+            )}
+            {filtered.length > visibleRecords.length && (
+              <div className="catalog-pagination">
+                <p>Showing {visibleRecords.length.toLocaleString()} of {filtered.length.toLocaleString()} front pages</p>
+                <button type="button" onClick={() => setVisibleLimit((current) => current + PAGE_SIZE)}>Show 48 more</button>
+              </div>
             )}
           </div>
         </div>

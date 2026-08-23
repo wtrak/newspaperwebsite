@@ -211,6 +211,10 @@ h1 em { color: var(--red); font-weight: 500; }
 .results-toolbar label { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .results-toolbar select { border: 0; border-bottom: 1px solid #8f8779; background: transparent; padding: 3px; font-weight: 700; }
 .catalog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 38px 22px; }
+.catalog-pagination { display: grid; place-items: center; gap: 10px; margin: 42px 0 8px; }
+.catalog-pagination p { margin: 0; color: #6f675b; font-size: 12px; font-weight: 700; }
+.catalog-pagination button { min-width: 180px; padding: 13px 20px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font-weight: 900; cursor: pointer; }
+.catalog-pagination button:hover { background: var(--ink); color: #fff; }
 .catalog-card { min-width: 0; }
 .preview-button { position: relative; width: 100%; padding: 14px; border: 1px solid #c2b7a4; background: #ddd1bc; cursor: pointer; overflow: hidden; }
 .preview-button:hover .news-preview { transform: translateY(-5px) rotate(-.5deg); }

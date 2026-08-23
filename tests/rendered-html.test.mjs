@@ -92,3 +92,18 @@ test("the browse catalog is backed by real image records", async () => {
     assert.ok(records.filter((record) => record.date?.slice(5) === monthDay).length >= 4, `${monthDay} should have at least four real pages`);
   }
 });
+
+test("the bulk catalog contains at least 2,000 real public-domain issue pages", async () => {
+  const raw = await readFile(new URL("../catalog/loc_bulk_front_pages.json", import.meta.url), "utf8");
+  const records = JSON.parse(raw);
+  assert.ok(records.length >= 2000);
+  assert.ok(records.every((record) => Number(record.date?.slice(0, 4)) < 1931));
+  assert.ok(records.every((record) => record.id?.includes("loc.gov/resource/") && record.image_url?.some((url) => url.includes("tile.loc.gov/image-services/"))));
+});
+
+test("large archive results are progressively revealed", async () => {
+  const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
+  assert.match(storefront, /const PAGE_SIZE = 48/);
+  assert.match(storefront, /visibleRecords = filtered\.slice/);
+  assert.match(storefront, /Show 48 more/);
+});

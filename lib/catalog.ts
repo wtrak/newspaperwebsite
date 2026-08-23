@@ -1,4 +1,5 @@
 import locFrontPages from "../catalog/loc_front_pages.json";
+import locBulkFrontPages from "../catalog/loc_bulk_front_pages.json";
 import { mapLocResult } from "./loc-archive";
 
 export type RightsStatus = "Public domain" | "Licensed" | "Rights review";
@@ -450,7 +451,7 @@ const demonstrationCatalog: NewspaperRecord[] = [
   },
 ];
 
-const seededCatalog = locFrontPages
+const seededCatalog = [...locFrontPages, ...locBulkFrontPages]
   .map((item, index) => mapLocResult(item, "date", "", index))
   .filter((item): item is NewspaperRecord => Boolean(item));
 

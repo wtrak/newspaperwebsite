@@ -28,11 +28,12 @@ const titleCase = (value: string) => value.replace(/\b\w/g, (character) => chara
 
 function parseIdentity(title: string) {
   const cleaned = title.replace(/^Image 1 of /, "");
-  const match = cleaned.match(/^(.+?) \(([^,]+),\s*([^)]+)\),/);
+  const bracketMatch = cleaned.match(/^(.+?) \((.*?) \[([^\]]+)\]\),/);
+  const commaMatch = cleaned.match(/^(.+?) \(([^,]+),\s*([^)]+)\),/);
   return {
-    publication: match?.[1]?.trim() || cleaned.split(",")[0] || "Historic newspaper",
-    city: match?.[2]?.trim() || "United States",
-    region: regionNames[match?.[3]?.trim().toLowerCase() || ""] || match?.[3]?.trim() || "",
+    publication: bracketMatch?.[1]?.trim() || commaMatch?.[1]?.trim() || cleaned.split(",")[0] || "Historic newspaper",
+    city: bracketMatch?.[2]?.trim() || commaMatch?.[2]?.trim() || "United States",
+    region: regionNames[(bracketMatch?.[3] || commaMatch?.[3] || "").trim().toLowerCase()] || (bracketMatch?.[3] || commaMatch?.[3] || "").trim(),
   };
 }
 
