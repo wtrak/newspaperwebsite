@@ -23,6 +23,8 @@ Use `publication-city-YYYY-MM-DD-edition` for the slug and asset base name. Keep
 
 The website catalog stays small because it stores metadata and preview links. Full-resolution Library of Congress files belong in the git-ignored `local-archive/` directory or on a dedicated external drive.
 
+On a Mac, double-click `Resume Newspaper Downloads.command` to continue only missing files, or `Open Newspaper Inventory.command` to open the searchable CSV inventory. The equivalent command-line options are below.
+
 ```bash
 # Estimate storage for the current catalog
 npm run masters:estimate
