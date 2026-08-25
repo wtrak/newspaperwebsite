@@ -11,10 +11,8 @@ import {
   uniqueDecades,
   uniqueRegions,
 } from "../lib/catalog";
-import { searchLocArchive, searchLocSameDay } from "../lib/loc-archive";
+import { searchLocSameDay } from "../lib/loc-archive";
 
-type SearchPath = "date" | "headline";
-type DateMode = "exact" | "month-day";
 type LiveStatus = "idle" | "loading" | "done" | "error";
 
 type CartLine = {
@@ -31,6 +29,57 @@ const months = [
 ];
 
 const PAGE_SIZE = 48;
+
+const notableHeadlines = [
+  {
+    title: "Titanic Sinks on Her Maiden Voyage",
+    publication: "The Times-Dispatch",
+    issueDate: "1912-04-16",
+    image: "/archive/notable-headlines/titanic-times-dispatch-preview.jpg",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:TheTimesDispatch-Titanic-1912-4-16.jpg",
+    summary: "A single front page captures the scale, uncertainty, and heartbreak of the disaster.",
+  },
+  {
+    title: "Hundreds Dead After San Francisco Earthquake",
+    publication: "The Daily News",
+    issueDate: "1906-04-18",
+    image: "/archive/notable-headlines/san-francisco-daily-news.gif",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:SF_Daily_News_April_18_1906.gif",
+    summary: "An extra edition reports the earthquake and fire while the city is still in crisis.",
+  },
+  {
+    title: "With Armistice, the War Comes to an End",
+    publication: "The New York Times",
+    issueDate: "1918-11-11",
+    image: "/archive/notable-headlines/armistice-1918.jpg",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:NYTimes-Page1-11-11-1918.jpg",
+    summary: "The armistice reaches page one as the First World War comes to an end.",
+  },
+  {
+    title: "Wall Street Explosion Kills 30",
+    publication: "The New York Times",
+    issueDate: "1920-09-17",
+    image: "/archive/notable-headlines/wall-street-bombing-preview.jpg",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Wallstreetbombing1920-page-001.jpg",
+    summary: "A dramatic page records the bombing, the warnings, and the shock in lower Manhattan.",
+  },
+  {
+    title: "50-Year Struggle Ends in Victory for Women",
+    publication: "The Washington Evening Star",
+    issueDate: "1920-08-26",
+    image: "/archive/notable-headlines/womens-suffrage-1920.jpg",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:Headline_of_Washington_Evening_Star,_August_26,_1920-_%22Suffrage_proclaimed_by_(Bainbridge)_Colby_(Sec%27y_of_State)...50-year_struggle_ends_in_victory_for_women%22_LCCN2005679744.jpg",
+    summary: "The Nineteenth Amendment is proclaimed and a new era of voting rights begins.",
+  },
+  {
+    title: "President Harding Dies Suddenly",
+    publication: "The New York Times",
+    issueDate: "1923-08-04",
+    image: "/archive/notable-headlines/harding-death.gif",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:WarrenGHardingdeathnews.gif",
+    summary: "An extra edition announces the president's death and Calvin Coolidge's succession.",
+  },
+] as const;
 
 function detailPreviewUrl(previewUrl: string) {
   return previewUrl
@@ -60,16 +109,11 @@ function NewspaperPreview({ record, compact = false, detail = false }: { record:
 }
 
 export default function StorefrontV2() {
-  const [searchPath, setSearchPath] = useState<SearchPath>("date");
-  const [dateMode, setDateMode] = useState<DateMode>("exact");
-  const [date, setDate] = useState("");
   const [month, setMonth] = useState("11");
   const [day, setDay] = useState("11");
-  const [headlineQuery, setHeadlineQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
   const [decade, setDecade] = useState("All decades");
   const [region, setRegion] = useState("All locations");
-  const [occasion, setOccasion] = useState("All occasions");
   const [sort, setSort] = useState("Featured");
   const [liveResults, setLiveResults] = useState<NewspaperRecord[]>([]);
   const [liveStatus, setLiveStatus] = useState<LiveStatus>("idle");
@@ -90,23 +134,15 @@ export default function StorefrontV2() {
   }, [liveResults]);
 
   const filtered = useMemo(() => {
-    const headlineNeedle = headlineQuery.trim().toLowerCase();
     const locationNeedle = locationQuery.trim().toLowerCase();
     const monthDay = `${month}-${day.padStart(2, "0")}`;
     const results = allRecords.filter((item) => {
-      const headlineText = [item.headline, item.summary, item.publication, ...item.keywords].join(" ").toLowerCase();
       const locationText = [item.city, item.region, item.country, item.publication].join(" ").toLowerCase();
-      const pathMatch = searchPath === "headline"
-        ? (!headlineNeedle || headlineText.includes(headlineNeedle))
-        : dateMode === "exact"
-          ? (!date || item.issueDate === date)
-          : item.issueDate.slice(5) === monthDay;
 
-      return pathMatch
+      return item.issueDate.slice(5) === monthDay
         && (!locationNeedle || locationText.includes(locationNeedle))
         && (decade === "All decades" || item.decade === decade)
-        && (region === "All locations" || item.region === region)
-        && (occasion === "All occasions" || item.occasion === occasion);
+        && (region === "All locations" || item.region === region);
     });
 
     return [...results].sort((a, b) => {
@@ -115,24 +151,14 @@ export default function StorefrontV2() {
       if (sort === "City A–Z") return a.city.localeCompare(b.city);
       return Number(Boolean(b.featured)) - Number(Boolean(a.featured));
     });
-  }, [allRecords, searchPath, dateMode, date, month, day, headlineQuery, locationQuery, decade, region, occasion, sort]);
+  }, [allRecords, month, day, locationQuery, decade, region, sort]);
 
   const visibleRecords = filtered.slice(0, visibleLimit);
 
-  const choosePath = (path: SearchPath) => {
-    setSearchPath(path);
-    setVisibleLimit(PAGE_SIZE);
-    setLiveResults([]);
-    setLiveStatus("idle");
-  };
-
   const clearFilters = () => {
-    setDate("");
-    setHeadlineQuery("");
     setLocationQuery("");
     setDecade("All decades");
     setRegion("All locations");
-    setOccasion("All occasions");
     setLiveResults([]);
     setVisibleLimit(PAGE_SIZE);
     setLiveStatus("idle");
@@ -145,37 +171,35 @@ export default function StorefrontV2() {
     setLiveStatus("idle");
     setDecade("All decades");
     setRegion("All locations");
-    setOccasion("All occasions");
     document.querySelector("#archive")?.scrollIntoView({ behavior: "smooth" });
-
-    if (searchPath === "date" && dateMode === "exact" && !date) return;
-    if (searchPath === "headline" && !headlineQuery.trim()) return;
 
     setLiveStatus("loading");
     try {
-      let items: NewspaperRecord[] = [];
-      if (searchPath === "date" && dateMode === "month-day") {
-        items = await searchLocSameDay(month, day);
-      } else {
-        const mode = searchPath === "date" ? "date" : "headline";
-        try {
-          items = await searchLocArchive({ mode, date, query: headlineQuery.trim() });
-        } catch {
-          const params = new URLSearchParams({ mode });
-          if (mode === "date") params.set("date", date);
-          else params.set("q", headlineQuery.trim());
-          const response = await fetch(`/api/archive-search?${params}`);
-          if (!response.ok) throw new Error("Archive lookup failed");
-          const payload = await response.json() as { items?: NewspaperRecord[] };
-          items = Array.isArray(payload.items) ? payload.items : [];
-        }
-      }
+      const items = await searchLocSameDay(month, day);
 
       setLiveResults(items);
       setLiveStatus("done");
     } catch {
       setLiveStatus("error");
     }
+  };
+
+  const chooseMonth = (nextMonth: string) => {
+    setMonth(nextMonth);
+    const lastDay = new Date(2024, Number(nextMonth), 0).getDate();
+    if (Number(day) > lastDay) setDay(String(lastDay));
+  };
+
+  const exploreNotableDate = (issueDate: string) => {
+    setMonth(issueDate.slice(5, 7));
+    setDay(String(Number(issueDate.slice(8, 10))));
+    setLocationQuery("");
+    setDecade("All decades");
+    setRegion("All locations");
+    setLiveResults([]);
+    setLiveStatus("idle");
+    setVisibleLimit(PAGE_SIZE);
+    document.querySelector("#archive")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const openRecord = (record: NewspaperRecord) => {
@@ -226,11 +250,7 @@ export default function StorefrontV2() {
     }
   };
 
-  const archiveTitle = searchPath === "headline"
-    ? "Find the front page you remember"
-    : dateMode === "month-day"
-      ? `What happened on ${months.find(([value]) => value === month)?.[1]} ${Number(day)}?`
-      : "Discover the news from their day";
+  const archiveTitle = `What happened on ${months.find(([value]) => value === month)?.[1]} ${Number(day)}?`;
   const subtotal = cart.reduce((sum, line) => sum + line.price, 0);
 
   return (
@@ -241,7 +261,8 @@ export default function StorefrontV2() {
           <span><strong>FIRST EDITION</strong><small>HISTORY, MADE PERSONAL</small></span>
         </a>
         <nav aria-label="Main navigation">
-          <a href="#archive">Browse archive</a>
+          <a href="#archive">Shop by date</a>
+          <a href="#notable-headlines">Notable headlines</a>
           <a href="#sources">Our sources</a>
           <button className="bag-button" type="button" onClick={() => setBagOpen(true)} aria-label={`Open print bag with ${cart.length} items`}>Print bag <span>{cart.length}</span></button>
         </nav>
@@ -249,45 +270,22 @@ export default function StorefrontV2() {
 
       <section className="hero journey-hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow">ONE ARCHIVE · TWO WAYS TO FIND THE RIGHT PAGE</p>
-          <h1>{searchPath === "date" ? <>Give them the world from <em>their day.</em></> : <>Find the headline that <em>made history.</em></>}</h1>
-          <p className="hero-intro">{searchPath === "date" ? "Start with a birthday or anniversary and discover what was making news that day—the surprise is the gift." : "Start with an event, person, team, or remembered phrase and find a front page made for display."}</p>
-
-          <div className="journey-switch" role="tablist" aria-label="Choose how to search">
-            <button type="button" role="tab" aria-selected={searchPath === "date"} className={searchPath === "date" ? "active" : ""} onClick={() => choosePath("date")}><span>01</span><strong>Shop by date</strong><small>Birthdays & anniversaries</small></button>
-            <button type="button" role="tab" aria-selected={searchPath === "headline"} className={searchPath === "headline" ? "active" : ""} onClick={() => choosePath("headline")}><span>02</span><strong>Shop by headline</strong><small>History & decor</small></button>
-          </div>
+          <p className="eyebrow">THE NEWS FROM THEIR DAY · THROUGH HISTORY</p>
+          <h1>Give them the world from <em>their special day.</em></h1>
+          <p className="hero-intro">Choose the month and day of a birthday, anniversary, or milestone. Then discover the real front pages published on that same date across generations—and turn the most surprising one into a truly personal gift.</p>
 
           <form className="journey-search" onSubmit={runSearch}>
-            {searchPath === "date" ? (
-              <>
-                <div className="date-mode-switch">
-                  <button type="button" className={dateMode === "exact" ? "active" : ""} onClick={() => { setDateMode("exact"); setLiveResults([]); }}>Exact date + year</button>
-                  <button type="button" className={dateMode === "month-day" ? "active" : ""} onClick={() => { setDateMode("month-day"); setLiveResults([]); }}>Same day, any year</button>
-                </div>
-                <div className="journey-fields">
-                  {dateMode === "exact" ? (
-                    <label><span>The meaningful date</span><input aria-label="Exact date and year" type="date" value={date} onInput={(event) => setDate(event.currentTarget.value)} /></label>
-                  ) : (
-                    <div className="month-day-fields" aria-label="Month and day">
-                      <label><span>Month</span><select value={month} onChange={(event) => setMonth(event.target.value)}>{months.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-                      <label><span>Day</span><select value={day} onChange={(event) => setDay(event.target.value)}>{Array.from({ length: 31 }, (_, index) => `${index + 1}`).map((value) => <option key={value}>{value}</option>)}</select></label>
-                    </div>
-                  )}
-                  <label><span>Place or publication (optional)</span><input type="search" value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder="Try Florida or Chicago" /></label>
-                  <button type="submit">{dateMode === "exact" ? "Find that day's news" : "Explore every year"} <span aria-hidden="true">→</span></button>
-                </div>
-              </>
-            ) : (
-              <div className="journey-fields headline-fields">
-                <label><span>Headline, event, person, or team</span><input type="search" value={headlineQuery} onChange={(event) => setHeadlineQuery(event.target.value)} placeholder="Try armistice, Apollo 11, or Cubs" /></label>
-                <label><span>Place or publication (optional)</span><input type="search" value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder="Try New York or Chicago" /></label>
-                <button type="submit">Find a headline <span aria-hidden="true">→</span></button>
+            <div className="journey-fields">
+              <div className="month-day-fields" aria-label="Celebration month and day">
+                <label><span>Celebration month</span><select value={month} onChange={(event) => chooseMonth(event.target.value)}>{months.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+                <label><span>Day</span><select value={day} onChange={(event) => setDay(event.target.value)}>{Array.from({ length: new Date(2024, Number(month), 0).getDate() }, (_, index) => `${index + 1}`).map((value) => <option key={value}>{value}</option>)}</select></label>
               </div>
-            )}
+              <label><span>Place or publication (optional)</span><input type="search" value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder="Try Florida or Chicago" /></label>
+              <button type="submit">See their day in history <span aria-hidden="true">→</span></button>
+            </div>
           </form>
 
-          <p className="search-explainer">{searchPath === "date" && dateMode === "month-day" ? "Compare the same calendar day across our catalog and a live sampler of historic decades." : searchPath === "date" ? "Exact-date searches check the catalog and the live archive for front pages you can order." : "Headline searches look through titles, summaries, subjects, and archive OCR."}</p>
+          <p className="search-explainer">No year needed. We’ll show you that calendar day across history so you can choose the front page with the best story, surprise, or personal connection.</p>
           <div className="trust-row" aria-label="Product details"><span>Archival-quality paper</span><span>Rights checked before printing</span><span>Prints only—no frames</span></div>
         </div>
 
@@ -299,25 +297,24 @@ export default function StorefrontV2() {
       </section>
 
       <section className="occasion-row" aria-label="Shop by occasion">
-        {[["Birthday", "The news from the day they arrived"], ["Anniversary", "The world on the day they said yes"], ["Hometown", "A place that will always feel like home"], ["History", "The front page that captured the moment"]].map(([label, copy], index) => (
-          <button type="button" key={label} onClick={() => { setOccasion(label); document.querySelector("#archive")?.scrollIntoView({ behavior: "smooth" }); }}><span>0{index + 1}</span><strong>{label}</strong><small>{copy}</small></button>
+        {[["Birthday", "What the world was talking about on the day they celebrate"], ["Anniversary", "A surprising piece of history tied to the date they share"], ["Wedding", "A conversation-starting keepsake for the couple's special day"], ["Milestone", "A one-of-a-kind gift for retirements, reunions, and big moments"]].map(([label, copy], index) => (
+          <article key={label}><span>0{index + 1}</span><strong>{label}</strong><small>{copy}</small></article>
         ))}
       </section>
 
       <section className="archive-section" id="archive">
         <div className="archive-heading">
           <div><p className="eyebrow">THE SEARCHABLE ARCHIVE</p><h2>{archiveTitle}</h2></div>
-          <p>{searchPath === "date" ? "The date comes first. Browse the headlines that happened to share it, then choose the edition with the best story or hometown connection." : "The story comes first. Search for a known moment and compare how different newspapers put it on page one."}</p>
+          <p>Browse the news that shared their month and day across the years, then choose the edition with the best story, surprise, or hometown connection.</p>
         </div>
 
         <div className="archive-layout">
           <aside className="filters" aria-label="Archive filters">
             <div className="filter-title"><strong>Refine these results</strong><button type="button" onClick={clearFilters}>Clear all</button></div>
-            <div className="filter-path"><span>SEARCHING BY</span><strong>{searchPath === "date" ? (dateMode === "exact" ? "Exact date + year" : "Same day, any year") : "Specific headline"}</strong></div>
+            <div className="filter-path"><span>CELEBRATION DATE</span><strong>{months.find(([value]) => value === month)?.[1]} {Number(day)} · Through history</strong></div>
             <label><span>Place or publication</span><input type="search" value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder="City, state, country, or paper" /></label>
             <label><span>Decade</span><select value={decade} onChange={(event) => setDecade(event.target.value)}><option>All decades</option>{uniqueDecades.map((value) => <option key={value}>{value}</option>)}</select></label>
             <label><span>Location</span><select value={region} onChange={(event) => setRegion(event.target.value)}><option>All locations</option>{uniqueRegions.map((value) => <option key={value}>{value}</option>)}</select></label>
-            <label><span>Occasion</span><select value={occasion} onChange={(event) => setOccasion(event.target.value)}><option>All occasions</option>{["Birthday", "Anniversary", "History", "Sports", "Hometown"].map((value) => <option key={value}>{value}</option>)}</select></label>
             <div className="archive-note"><strong>Every listing is available</strong><p>Choose any front page shown here, select a size, and add the print directly to your bag.</p></div>
           </aside>
 
@@ -347,7 +344,7 @@ export default function StorefrontV2() {
                 ))}
               </div>
             ) : (
-              <div className="empty-state"><span>NO EDITION FOUND</span><h3>Try widening your search.</h3><p>Remove a location filter, search a nearby date, or use “same day, any year” to see more purchasable front pages.</p><button type="button" onClick={clearFilters}>Browse every available print</button></div>
+              <div className="empty-state"><span>NO EDITION FOUND</span><h3>Try widening your search.</h3><p>Remove the location or decade filters to see more front pages from this calendar day.</p><button type="button" onClick={clearFilters}>Clear the extra filters</button></div>
             )}
             {filtered.length > visibleRecords.length && (
               <div className="catalog-pagination">
@@ -362,6 +359,29 @@ export default function StorefrontV2() {
       <section className="story-band">
         <div><p className="eyebrow">WHY DATE-FIRST WORKS</p><blockquote>“The surprise isn’t the date. It’s discovering what the world was talking about that day.”</blockquote></div>
         <div className="quality-card"><span>THE PRINT</span><h3>Made for the wall, without the frame.</h3><p>Each cleared front page is prepared and printed on heavyweight archival matte paper with generous margins for easy display or custom framing later.</p><ul><li>Large-format pigment printing</li><li>Four print-only sizes</li><li>Protective rolled shipping</li><li>Quality checked by hand</li></ul></div>
+      </section>
+
+      <section className="notable-section" id="notable-headlines">
+        <div className="notable-heading">
+          <div><p className="eyebrow">NOTABLE HEADLINES</p><h2>See how one ordinary date can hold extraordinary history.</h2></div>
+          <p>These public-domain front pages are here for inspiration. Choose one of their dates to explore what newspapers were reporting on that same month and day across many other years.</p>
+        </div>
+        <div className="notable-grid">
+          {notableHeadlines.map((item) => (
+            <article key={item.title}>
+              <button className="notable-image" type="button" onClick={() => exploreNotableDate(item.issueDate)} aria-label={`Explore ${formatIssueDate(item.issueDate)} through history`}>
+                <img src={item.image} loading="lazy" alt={`${item.publication} front page for ${formatIssueDate(item.issueDate)}`} />
+                <span>PUBLIC DOMAIN</span>
+              </button>
+              <div className="notable-copy">
+                <p>{formatIssueDate(item.issueDate)} · {item.publication}</p>
+                <h3>{item.title}</h3>
+                <span>{item.summary}</span>
+                <div><button type="button" onClick={() => exploreNotableDate(item.issueDate)}>Explore this day →</button><a href={item.sourceUrl} target="_blank" rel="noreferrer">View source ↗</a></div>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="sources-section" id="sources">
@@ -385,12 +405,12 @@ export default function StorefrontV2() {
 
       <section className="how-section" id="how-it-works">
         <p className="eyebrow">FROM ARCHIVE TO THEIR DOOR</p><h2>Three careful steps</h2>
-        <div>{[["01", "Find the date or story", "Search an exact date, the same day across years, or a remembered headline."], ["02", "We verify the edition", "We confirm the source, reproduction rights, and whether the scan can produce a beautiful large print."], ["03", "Choose the print size", "Once confirmed, we prepare, inspect, and ship the print safely rolled—never framed."]].map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+        <div>{[["01", "Choose their month and day", "Start with the date of the birthday, anniversary, or celebration—no year needed."], ["02", "Discover that day through history", "Compare real front pages published on the same calendar day across generations."], ["03", "Choose the perfect surprise", "Pick the most interesting edition, select a print size, and we’ll ship it safely rolled—never framed."]].map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
       </section>
 
       <footer>
         <div className="footer-brand"><span className="brand-mark">FE</span><div><strong>FIRST EDITION</strong><p>Historic front pages, printed for personal milestones.</p></div></div>
-        <div><strong>SHOP</strong><a href="#top" onClick={() => choosePath("date")}>Shop by date</a><a href="#top" onClick={() => choosePath("headline")}>Shop by headline</a><a href="#archive">Browse all prints</a></div>
+        <div><strong>SHOP</strong><a href="#top">Choose a celebration date</a><a href="#notable-headlines">Notable headlines</a><a href="#archive">Browse date results</a></div>
         <div><strong>PRINT DETAILS</strong><span>Prints only—no frames</span><span>Archival matte paper</span><span>Ships safely rolled</span></div>
         <p className="rights-note">U.S. issues published more than 95 years ago are treated as public domain and need no copyright permission. Newer or restricted material remains unavailable until commercial reproduction rights are documented. Every scan is still checked for print quality.</p>
       </footer>

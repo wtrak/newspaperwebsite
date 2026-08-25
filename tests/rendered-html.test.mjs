@@ -31,11 +31,13 @@ test("server-renders the First Edition storefront", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>First Edition \| Historic Newspaper Prints<\/title>/i);
+  assert.match(html, /<title>First Edition \| A Front Page From Their Day<\/title>/i);
   assert.match(html, /FIRST EDITION/);
   assert.match(html, /Shop by date/);
-  assert.match(html, /Shop by headline/);
-  assert.match(html, /Same day, any year/);
+  assert.match(html, /No year needed/);
+  assert.match(html, /NOTABLE HEADLINES/);
+  assert.match(html, /See how one ordinary date can hold extraordinary history/);
+  assert.doesNotMatch(html, /Shop by headline|Exact date \+ year|type="date"/i);
   assert.match(html, /Prints only/);
   assert.match(html, /THE SEARCHABLE ARCHIVE/);
   assert.match(html, /Public domain first/);
@@ -71,20 +73,41 @@ test("archive source registry classifies the supplied research links", async () 
   assert.match(source, /Legacy \/ inactive/);
 });
 
-test("date searches return only purchasable archive results", async () => {
+test("month-and-day searches return only purchasable archive results", async () => {
   const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
   const archive = await readFile(new URL("../lib/loc-archive.ts", import.meta.url), "utf8");
-  assert.match(storefront, /searchLocArchive/);
   assert.match(storefront, /searchLocSameDay/);
+  assert.doesNotMatch(storefront, /searchPath|dateMode|headlineQuery|searchLocArchive|type="date"/);
   assert.doesNotMatch(storefront, /createDateRequestRecord|createSameDayRequestRecord/);
   assert.match(storefront, /Every front page shown is available to order/);
   assert.match(storefront, /Add print to bag/);
   assert.match(storefront, /Place order/);
-  assert.match(storefront, /onInput=\{\(event\) => setDate/);
+  assert.match(storefront, /Celebration month/);
+  assert.match(storefront, /No year needed/);
   assert.match(archive, /image_url\?: string\[\]/);
   assert.match(archive, /representativeYears/);
   assert.match(archive, /item\.rightsStatus === "Public domain"/);
   assert.doesNotMatch(archive, /createDateRequestRecord|createSameDayRequestRecord/);
+});
+
+test("notable headlines are a curated inspiration page, not a second search mode", async () => {
+  const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
+  assert.match(storefront, /const notableHeadlines = \[/);
+  assert.match(storefront, /Explore this day/);
+  assert.match(storefront, /public-domain front pages are here for inspiration/i);
+  assert.doesNotMatch(storefront, /Shop by headline|Find a headline|Specific headline/);
+
+  const assets = [
+    "titanic-times-dispatch-preview.jpg",
+    "san-francisco-daily-news.gif",
+    "armistice-1918.jpg",
+    "wall-street-bombing-preview.jpg",
+    "womens-suffrage-1920.jpg",
+    "harding-death.gif",
+  ];
+  for (const asset of assets) {
+    assert.ok((await stat(new URL(`../public/archive/notable-headlines/${asset}`, import.meta.url))).size > 50_000, `${asset} should be stored locally`);
+  }
 });
 
 test("every catalog listing is directly available as a print", async () => {
