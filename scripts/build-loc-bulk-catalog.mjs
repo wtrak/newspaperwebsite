@@ -4,24 +4,12 @@ import { fileURLToPath } from "node:url";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const outputArgument = process.argv.find((argument) => argument.startsWith("--output="))?.slice(9);
-const limitArgument = process.argv.find((argument) => argument.startsWith("--limit="))?.slice(8);
 const batchesArgument = process.argv.find((argument) => argument.startsWith("--batches="))?.slice(10);
+const perDayArgument = process.argv.find((argument) => argument.startsWith("--per-day="))?.slice(10);
+const batchesPerAwardeeArgument = process.argv.find((argument) => argument.startsWith("--batches-per-awardee="))?.slice(22);
 const outputPath = resolve(projectRoot, outputArgument || "catalog/loc_bulk_front_pages.json");
-const targetCount = Math.max(1, Number(limitArgument || 2000));
-const defaultBatches = [
-  "mb_hera_ver01",
-  "ak_albatross_ver01",
-  "az_acacia_ver01",
-  "dlc_1arp_ver01",
-  "kyu_airplane_ver01",
-  "nbu_abbott_ver01",
-  "ncu_adam_ver02",
-  "ndhi_alamo_ver01",
-  "ohi_alastor_ver02",
-  "okhi_apache_ver02",
-  "oru_argonaut_ver01",
-];
-const batches = batchesArgument ? batchesArgument.split(",").map((value) => value.trim()).filter(Boolean) : defaultBatches;
+const targetPerDay = Math.max(20, Number(perDayArgument || 40));
+const batchesPerAwardee = Math.max(1, Number(batchesPerAwardeeArgument || 2));
 const manifestNames = ["batch.xml", "batch_1.xml", "BATCH.xml", "BATCH_1.xml"];
 const userAgent = "FirstEditionArchive/0.2 (public-domain newspaper catalog builder)";
 
@@ -78,6 +66,22 @@ async function fetchManifest(batch) {
   throw new Error(`No issue manifest found for ${batch}`);
 }
 
+async function discoverBatches() {
+  if (batchesArgument) return batchesArgument.split(",").map((value) => value.trim()).filter(Boolean);
+
+  const html = await fetchText("https://chroniclingamerica.loc.gov/data/batches/");
+  const available = [...html.matchAll(/href="([a-z0-9]+_[a-z0-9]+_ver[0-9]+)\//gi)].map((match) => match[1]);
+  const byAwardee = new Map();
+  for (const batch of available) {
+    const awardee = batch.split("_")[0];
+    const values = byAwardee.get(awardee) || [];
+    values.push(batch);
+    byAwardee.set(awardee, values);
+  }
+
+  return [...byAwardee.values()].flatMap((values) => selectEvenly(values, batchesPerAwardee));
+}
+
 function parseServiceFiles(checksumManifest) {
   const files = new Map();
   const pattern = /\sdata\/(.+?)\/([^/\s]+\.jp2)\s*$/gim;
@@ -123,6 +127,53 @@ function selectEvenly(values, count) {
   return Array.from({ length: count }, (_, index) => values[Math.floor(index * values.length / count)]);
 }
 
+function roundRobinBy(values, key) {
+  const groups = new Map();
+  for (const value of values) {
+    const groupKey = key(value);
+    const group = groups.get(groupKey) || [];
+    group.push(value);
+    groups.set(groupKey, group);
+  }
+  const ordered = [];
+  const queues = [...groups.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, group]) => group);
+  while (queues.some((queue) => queue.length)) {
+    for (const queue of queues) {
+      const value = queue.shift();
+      if (value) ordered.push(value);
+    }
+  }
+  return ordered;
+}
+
+function selectCalendarDayIssues(issues, count) {
+  const byPublication = new Map();
+  for (const issue of issues) {
+    const key = `${issue.awardee}:${issue.lccn}`;
+    const values = byPublication.get(key) || [];
+    values.push(issue);
+    byPublication.set(key, values);
+  }
+
+  const publications = roundRobinBy(
+    [...byPublication.entries()].map(([key, values]) => ({ key, values: values.sort((a, b) => a.date.localeCompare(b.date)) })),
+    (publication) => publication.values[0].awardee,
+  );
+  const selected = [];
+  for (let round = 0; selected.length < count; round += 1) {
+    let added = 0;
+    for (const publication of publications) {
+      const issue = publication.values[round];
+      if (!issue) continue;
+      selected.push(issue);
+      added += 1;
+      if (selected.length === count) break;
+    }
+    if (!added) break;
+  }
+  return selected;
+}
+
 async function runPool(values, concurrency, task) {
   const results = new Array(values.length);
   let cursor = 0;
@@ -152,14 +203,34 @@ async function fetchTitleMetadata(issue) {
   }
 }
 
-const manifests = await runPool(batches, 3, fetchManifest);
-const parsedBatches = manifests.map(parseManifest).filter((issues) => issues.length > 0);
-const perBatch = Math.ceil(targetCount / parsedBatches.length);
-let selectedIssues = parsedBatches.flatMap((issues) => selectEvenly(issues, perBatch)).slice(0, targetCount);
-if (selectedIssues.length < targetCount) {
-  const selectedKeys = new Set(selectedIssues.map((issue) => `${issue.batch}:${issue.metsPath}`));
-  const remaining = parsedBatches.flat().filter((issue) => !selectedKeys.has(`${issue.batch}:${issue.metsPath}`));
-  selectedIssues = [...selectedIssues, ...selectEvenly(remaining, targetCount - selectedIssues.length)];
+const batches = await discoverBatches();
+console.log(`Loading ${batches.length} geographically diverse LOC newspaper batches…`);
+const manifestResults = await runPool(batches, 6, async (batch) => {
+  try {
+    return await fetchManifest(batch);
+  } catch (error) {
+    process.stderr.write(`Skipped batch ${batch}: ${error instanceof Error ? error.message : "request failed"}\n`);
+    return null;
+  }
+});
+const parsedBatches = manifestResults.filter(Boolean).map(parseManifest).filter((issues) => issues.length > 0);
+const issuesByDay = new Map();
+for (const issue of parsedBatches.flat()) {
+  const monthDay = issue.date.slice(5, 10);
+  const values = issuesByDay.get(monthDay) || [];
+  values.push(issue);
+  issuesByDay.set(monthDay, values);
+}
+const selectedIssues = [...issuesByDay.entries()]
+  .sort(([a], [b]) => a.localeCompare(b))
+  .flatMap(([, issues]) => selectCalendarDayIssues(issues, targetPerDay));
+
+const thinDays = [...issuesByDay.entries()]
+  .map(([monthDay, issues]) => ({ monthDay, count: selectCalendarDayIssues(issues, targetPerDay).length }))
+  .filter(({ count }) => count < targetPerDay);
+const belowMinimum = thinDays.filter(({ count }) => count < 20);
+if (belowMinimum.length) {
+  throw new Error(`Archive coverage is below 20 choices for ${belowMinimum.map(({ monthDay, count }) => `${monthDay} (${count})`).join(", ")}`);
 }
 
 const representatives = [...new Map(selectedIssues.map((issue) => [`${issue.batch}:${issue.lccn}`, issue])).values()];
@@ -185,3 +256,4 @@ await mkdir(dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(records, null, 2)}\n`);
 console.log(`Saved ${records.length} public-domain front pages from ${parsedBatches.length} LOC batches to ${outputPath}.`);
 console.log(`${new Set(records.map((record) => record.title.replace(/, \d{4}-\d{2}-\d{2}$/, ""))).size} publications represented.`);
+console.log(thinDays.length ? `${thinDays.length} calendar days have 20–39 choices; all others have ${targetPerDay}.` : `Every calendar day has ${targetPerDay} choices.`);

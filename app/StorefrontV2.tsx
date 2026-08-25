@@ -9,7 +9,6 @@ import {
   NewspaperRecord,
   printSizes,
   uniqueDecades,
-  uniqueRegions,
 } from "../lib/catalog";
 import { searchLocSameDay } from "../lib/loc-archive";
 
@@ -133,14 +132,22 @@ export default function StorefrontV2() {
     });
   }, [liveResults]);
 
+  const dayRecords = useMemo(() => {
+    const monthDay = `${month}-${day.padStart(2, "0")}`;
+    return allRecords.filter((item) => item.issueDate.slice(5) === monthDay);
+  }, [allRecords, month, day]);
+
+  const dayRegions = useMemo(() => [...new Set(dayRecords.map((item) => item.region).filter(Boolean))].sort(), [dayRecords]);
+  const daySearchSuggestions = useMemo(() => [...new Set(dayRecords.flatMap((item) => [item.city, item.region, item.publication]).filter(Boolean))].sort(), [dayRecords]);
+  const dayPublicationCount = useMemo(() => new Set(dayRecords.map((item) => item.publication)).size, [dayRecords]);
+  const dayPlaceCount = useMemo(() => new Set(dayRecords.map((item) => `${item.city}|${item.region}`)).size, [dayRecords]);
+
   const filtered = useMemo(() => {
     const locationNeedle = locationQuery.trim().toLowerCase();
-    const monthDay = `${month}-${day.padStart(2, "0")}`;
-    const results = allRecords.filter((item) => {
+    const results = dayRecords.filter((item) => {
       const locationText = [item.city, item.region, item.country, item.publication].join(" ").toLowerCase();
 
-      return item.issueDate.slice(5) === monthDay
-        && (!locationNeedle || locationText.includes(locationNeedle))
+      return (!locationNeedle || locationText.includes(locationNeedle))
         && (decade === "All decades" || item.decade === decade)
         && (region === "All locations" || item.region === region);
     });
@@ -151,7 +158,7 @@ export default function StorefrontV2() {
       if (sort === "City A–Z") return a.city.localeCompare(b.city);
       return Number(Boolean(b.featured)) - Number(Boolean(a.featured));
     });
-  }, [allRecords, month, day, locationQuery, decade, region, sort]);
+  }, [dayRecords, locationQuery, decade, region, sort]);
 
   const visibleRecords = filtered.slice(0, visibleLimit);
 
@@ -186,8 +193,18 @@ export default function StorefrontV2() {
 
   const chooseMonth = (nextMonth: string) => {
     setMonth(nextMonth);
+    setRegion("All locations");
+    setDecade("All decades");
+    setVisibleLimit(PAGE_SIZE);
     const lastDay = new Date(2024, Number(nextMonth), 0).getDate();
     if (Number(day) > lastDay) setDay(String(lastDay));
+  };
+
+  const chooseDay = (nextDay: string) => {
+    setDay(nextDay);
+    setRegion("All locations");
+    setDecade("All decades");
+    setVisibleLimit(PAGE_SIZE);
   };
 
   const exploreNotableDate = (issueDate: string) => {
@@ -278,14 +295,16 @@ export default function StorefrontV2() {
             <div className="journey-fields">
               <div className="month-day-fields" aria-label="Celebration month and day">
                 <label><span>Celebration month</span><select value={month} onChange={(event) => chooseMonth(event.target.value)}>{months.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-                <label><span>Day</span><select value={day} onChange={(event) => setDay(event.target.value)}>{Array.from({ length: new Date(2024, Number(month), 0).getDate() }, (_, index) => `${index + 1}`).map((value) => <option key={value}>{value}</option>)}</select></label>
+                <label><span>Day</span><select value={day} onChange={(event) => chooseDay(event.target.value)}>{Array.from({ length: new Date(2024, Number(month), 0).getDate() }, (_, index) => `${index + 1}`).map((value) => <option key={value}>{value}</option>)}</select></label>
               </div>
-              <label><span>Place or publication (optional)</span><input type="search" value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder="Try Florida or Chicago" /></label>
+              <label><span>Place or publication (optional)</span><input type="search" list="place-publication-options" value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder="Try Florida or Chicago" /></label>
               <button type="submit">See their day in history <span aria-hidden="true">→</span></button>
             </div>
           </form>
 
-          <p className="search-explainer">No year needed. We’ll show you that calendar day across history so you can choose the front page with the best story, surprise, or personal connection.</p>
+          <datalist id="place-publication-options">{daySearchSuggestions.map((value) => <option key={value} value={value} />)}</datalist>
+
+          <p className="search-explainer">No year needed. At least 40 real front pages are available for every day of the year, so you can choose the story, surprise, or personal connection that fits best.</p>
           <div className="trust-row" aria-label="Product details"><span>Archival-quality paper</span><span>Rights checked before printing</span><span>Prints only—no frames</span></div>
         </div>
 
@@ -312,15 +331,15 @@ export default function StorefrontV2() {
           <aside className="filters" aria-label="Archive filters">
             <div className="filter-title"><strong>Refine these results</strong><button type="button" onClick={clearFilters}>Clear all</button></div>
             <div className="filter-path"><span>CELEBRATION DATE</span><strong>{months.find(([value]) => value === month)?.[1]} {Number(day)} · Through history</strong></div>
-            <label><span>Place or publication</span><input type="search" value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder="City, state, country, or paper" /></label>
+            <label><span>Place or publication</span><input type="search" list="place-publication-options" value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder="City, state, or newspaper" /></label>
             <label><span>Decade</span><select value={decade} onChange={(event) => setDecade(event.target.value)}><option>All decades</option>{uniqueDecades.map((value) => <option key={value}>{value}</option>)}</select></label>
-            <label><span>Location</span><select value={region} onChange={(event) => setRegion(event.target.value)}><option>All locations</option>{uniqueRegions.map((value) => <option key={value}>{value}</option>)}</select></label>
+            <label><span>Location</span><select value={region} onChange={(event) => setRegion(event.target.value)}><option>All locations</option>{dayRegions.map((value) => <option key={value}>{value}</option>)}</select></label>
             <div className="archive-note"><strong>Every listing is available</strong><p>Choose any front page shown here, select a size, and add the print directly to your bag.</p></div>
           </aside>
 
           <div className="results-area">
             <div className="results-toolbar">
-              <div><p><strong>{filtered.length}</strong> available front {filtered.length === 1 ? "page" : "pages"}</p>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Search complete. Every front page shown is available to order.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged prints.</small>}</div>
+              <div><p><strong>{filtered.length}</strong> available front {filtered.length === 1 ? "page" : "pages"}</p><small className="coverage-summary">{dayPublicationCount} publications · {dayPlaceCount} places represented on this date</small>{liveStatus === "loading" && <small className="lookup-status">Checking the live Library of Congress archive…</small>}{liveStatus === "done" && <small className="lookup-status">Search complete. Every front page shown is available to order.</small>}{liveStatus === "error" && <small className="lookup-status error">The live archive is temporarily unavailable; showing cataloged prints.</small>}</div>
               <label><span>Sort</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option>Featured</option><option>Oldest first</option><option>Newest first</option><option>City A–Z</option></select></label>
             </div>
 

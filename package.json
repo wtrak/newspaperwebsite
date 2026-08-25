@@ -13,6 +13,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "catalog:build": "node scripts/build-loc-bulk-catalog.mjs",
+    "catalog:audit": "node scripts/audit-catalog.mjs",
     "catalog:build:seed": "node scripts/build-loc-catalog.mjs",
     "masters:estimate": "node scripts/download-print-masters.mjs --all --estimate",
     "masters:download": "node scripts/download-print-masters.mjs",

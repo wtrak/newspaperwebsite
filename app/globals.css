@@ -207,6 +207,7 @@ h1 em { color: var(--red); font-weight: 500; }
 .results-toolbar { min-height: 50px; display: flex; justify-content: space-between; align-items: start; border-top: 4px solid var(--ink); padding-top: 12px; }
 .results-toolbar p { margin: 0; color: #625c51; font-size: 12px; }
 .results-toolbar p strong { color: var(--ink); font-size: 15px; }
+.coverage-summary { display: block; margin-top: 4px; color: #756e61; font-size: 10px; font-weight: 700; }
 .results-toolbar label { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .results-toolbar select { border: 0; border-bottom: 1px solid #8f8779; background: transparent; padding: 3px; font-weight: 700; }
 .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 46px 28px; }

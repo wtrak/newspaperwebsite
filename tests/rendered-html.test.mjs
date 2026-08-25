@@ -144,9 +144,18 @@ test("the browse catalog is backed by real image records", async () => {
 test("the bulk catalog contains at least 2,000 real public-domain issue pages", async () => {
   const raw = await readFile(new URL("../catalog/loc_bulk_front_pages.json", import.meta.url), "utf8");
   const records = JSON.parse(raw);
-  assert.ok(records.length >= 2000);
+  assert.ok(records.length >= 14_640);
   assert.ok(records.every((record) => Number(record.date?.slice(0, 4)) < 1931));
   assert.ok(records.every((record) => record.id?.includes("loc.gov/resource/") && record.image_url?.some((url) => url.includes("tile.loc.gov/image-services/"))));
+});
+
+test("date-specific place and publication refinements are discoverable", async () => {
+  const storefront = await readFile(new URL("../app/StorefrontV2.tsx", import.meta.url), "utf8");
+  assert.match(storefront, /daySearchSuggestions/);
+  assert.match(storefront, /<datalist id="place-publication-options">/);
+  assert.match(storefront, /dayRegions\.map/);
+  assert.match(storefront, /publications · \{dayPlaceCount\} places represented on this date/);
+  assert.match(storefront, /At least 40 real front pages are available for every day of the year/);
 });
 
 test("large archive results are progressively revealed", async () => {
@@ -186,7 +195,7 @@ test("Internet Archive imports are visually approved before catalog publication"
   }
 });
 
-test("every calendar day has at least four gift-date choices", async () => {
+test("every calendar day has at least forty gift-date choices", async () => {
   const files = [
     "../catalog/loc_front_pages.json",
     "../catalog/loc_bulk_front_pages.json",
@@ -202,7 +211,7 @@ test("every calendar day has at least four gift-date choices", async () => {
   const day = new Date(Date.UTC(2024, 0, 1));
   while (day.getUTCFullYear() === 2024) {
     const monthDay = day.toISOString().slice(5, 10);
-    assert.ok((counts.get(monthDay) || 0) >= 4, `${monthDay} should have at least four real pages`);
+    assert.ok((counts.get(monthDay) || 0) >= 40, `${monthDay} should have at least forty real pages`);
     day.setUTCDate(day.getUTCDate() + 1);
   }
 });
