@@ -24,6 +24,9 @@ const regionNames: Record<string, string> = {
   "wash.": "Washington", "wis.": "Wisconsin", "w. va.": "West Virginia", "wyo.": "Wyoming",
 };
 
+const PUBLIC_DOMAIN_BEFORE_YEAR = 1931;
+const RIGHTS_CHECKED_AT = "2026-08-25";
+
 const titleCase = (value: string) => value.replace(/\b\w/g, (character) => character.toUpperCase());
 
 function parseIdentity(title: string) {
@@ -54,8 +57,7 @@ export function mapLocResult(item: LocSearchItem, mode: LocSearchMode, query = "
   const id = item.id.replace("http://", "https://");
   const identity = parseIdentity(item.title);
   const year = Number(item.date.slice(0, 4));
-  const publicDomainCutoff = new Date().getUTCFullYear() - 95;
-  const isPublicDomain = year < publicDomainCutoff;
+  const isPublicDomain = year < PUBLIC_DOMAIN_BEFORE_YEAR;
 
   return {
     id: sourceReference(id),
@@ -80,9 +82,9 @@ export function mapLocResult(item: LocSearchItem, mode: LocSearchMode, query = "
     sourceUrl: id,
     previewUrl,
     rightsBasis: isPublicDomain
-      ? `Published in the United States before January 1, ${publicDomainCutoff}; public domain in its entirety. No copyright permission required.`
+      ? `Published in the United States before January 1, ${PUBLIC_DOMAIN_BEFORE_YEAR}; public domain in its entirety. No copyright permission required.`
       : "No automatic clearance; publication, contributions, and scan rights require review.",
-    rightsCheckedAt: new Date().toISOString().slice(0, 10),
+    rightsCheckedAt: RIGHTS_CHECKED_AT,
     catalogStatus: "Archive lead",
     featured: index < 2,
     accent: (["gold", "red", "green", "blue"] as const)[index % 4],

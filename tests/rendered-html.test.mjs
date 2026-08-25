@@ -86,6 +86,8 @@ test("month-and-day searches return only purchasable archive results", async () 
   assert.match(storefront, /No year needed/);
   assert.match(archive, /image_url\?: string\[\]/);
   assert.match(archive, /representativeYears/);
+  assert.match(archive, /PUBLIC_DOMAIN_BEFORE_YEAR = 1931/);
+  assert.doesNotMatch(archive, /new Date\(\)\.getUTCFullYear/);
   assert.match(archive, /item\.rightsStatus === "Public domain"/);
   assert.doesNotMatch(archive, /createDateRequestRecord|createSameDayRequestRecord/);
 });
